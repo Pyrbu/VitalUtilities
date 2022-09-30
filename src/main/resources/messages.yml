@@ -1,0 +1,11 @@
+
+# {0}: The correct command usage
+incorrect-usage: "&cIncorrect usage: /{0}"
+only-player-command: "&cOnly players can use this command!"
+
+# {0}: Username
+# {1}: Display Name
+# {2}: Command
+command-spy-format: "&7[&3CSPY&7] &f{0} &7-> &b{2}"
+command-spy-enabled: "&aCommand spy: ENABLED"
+command-spy-disabled: "&aCommand spy: &cDISABLED"

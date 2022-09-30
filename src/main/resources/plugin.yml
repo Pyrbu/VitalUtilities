@@ -1,0 +1,44 @@
+name: VitalUtilities
+
+authors: [Pyr#6969]
+version: ${project.version}
+
+main: me.pyr.utilities.UtilitiesPlugin
+api-version: 1.19
+softdepend: [PlaceholderAPI]
+
+commands:
+  vitalutilities:
+    aliases: [vital, utilities]
+    permission: utilities.admin
+    permission-message: "You don't have the required permission to use this command"
+
+  commandspy:
+    aliases: [cspy, cs]
+    permission: utilities.commandspy
+    permission-message: "You don't have the required permission to use this command"
+
+  gamemode:
+    aliases: [gm]
+    permission: utilities.gamemode
+    permission-message: "You don't have the required permission to use this command"
+
+  gms:
+    aliases: [gm0]
+    permission: utilities.gamemode
+    permission-message: "You don't have the required permission to use this command"
+
+  gmc:
+    aliases: [gm1]
+    permission: utilities.gamemode
+    permission-message: "You don't have the required permission to use this command"
+
+  gmsp:
+    aliases: [gm3]
+    permission: utilities.gamemode
+    permission-message: "You don't have the required permission to use this command"
+
+  gma:
+    aliases: [gm2]
+    permission: utilities.gamemode
+    permission-message: "You don't have the required permission to use this command"
