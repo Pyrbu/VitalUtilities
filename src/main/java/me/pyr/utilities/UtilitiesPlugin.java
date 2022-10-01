@@ -3,10 +3,11 @@ package me.pyr.utilities;
 import lombok.Getter;
 import me.pyr.utilities.commandspy.CommandSpyCommand;
 import me.pyr.utilities.commandspy.CommandSpyListener;
-import me.pyr.utilities.configuration.UtilitiesMessages;
 import me.pyr.utilities.configuration.UtilitiesConfiguration;
+import me.pyr.utilities.configuration.UtilitiesMessages;
 import me.pyr.utilities.gamemode.GamemodeCommand;
 import me.pyr.utilities.gamemode.GamemodeShortcutCommand;
+import me.pyr.utilities.inventory.ClearInventoryCommand;
 import me.pyr.utilities.storage.UtilitiesStorageProvider;
 import me.pyr.utilities.storage.implementations.MongoDBStorage;
 import me.pyr.utilities.storage.implementations.YamlStorage;
@@ -25,7 +26,7 @@ public class UtilitiesPlugin extends JavaPlugin {
 
     private boolean enabled = false;
 
-    @Getter private UtilitiesConfiguration config;
+    @Getter private UtilitiesConfiguration utilitiesConfig;
     @Getter private UtilitiesMessages messages;
 
     @Getter private UtilitiesStorageProvider storage;
@@ -33,16 +34,16 @@ public class UtilitiesPlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         getLogger().info(" ");
-        getLogger().info("Welcome to " + getDescription().getName());
+        getLogger().info("Welcome to " + getDescription().getName() + " v" + getDescription().getVersion());
         getLogger().info("Made with love by " + String.join(", ", getDescription().getAuthors()));
         getLogger().info(" ");
 
-        config = new UtilitiesConfiguration(this);
+        utilitiesConfig = new UtilitiesConfiguration(this);
         messages = new UtilitiesMessages(this);
         getLogger().info("Configurations loaded");
 
         initialiseStorage();
-        getLogger().info("Initialised Storage [" + config.getStorageType().toString() + "]");
+        getLogger().info("Initialised Storage [" + utilitiesConfig.getStorageType().toString() + "]");
 
         registerListeners();
         getLogger().info("Registered listeners");
@@ -62,7 +63,7 @@ public class UtilitiesPlugin extends JavaPlugin {
     }
 
     private void initialiseStorage() {
-        switch (config.getStorageType()) {
+        switch (utilitiesConfig.getStorageType()) {
             case YAML -> storage = new YamlStorage(this);
             case MONGODB -> storage = new MongoDBStorage(this);
         }
@@ -78,11 +79,12 @@ public class UtilitiesPlugin extends JavaPlugin {
     private void registerCommands() {
         getCommand("vitalutilities").setExecutor(this);
         getCommand("commandspy").setExecutor(new CommandSpyCommand(this));
-        getCommand("gamemode").setExecutor(new GamemodeCommand());
-        getCommand("gms").setExecutor(new GamemodeShortcutCommand(GameMode.SURVIVAL));
-        getCommand("gmc").setExecutor(new GamemodeShortcutCommand(GameMode.CREATIVE));
-        getCommand("gma").setExecutor(new GamemodeShortcutCommand(GameMode.ADVENTURE));
-        getCommand("gmsp").setExecutor(new GamemodeShortcutCommand(GameMode.SPECTATOR));
+        getCommand("gamemode").setExecutor(new GamemodeCommand(this));
+        getCommand("gms").setExecutor(new GamemodeShortcutCommand(this, GameMode.SURVIVAL));
+        getCommand("gmc").setExecutor(new GamemodeShortcutCommand(this, GameMode.CREATIVE));
+        getCommand("gma").setExecutor(new GamemodeShortcutCommand(this, GameMode.ADVENTURE));
+        getCommand("gmsp").setExecutor(new GamemodeShortcutCommand(this, GameMode.SPECTATOR));
+        getCommand("clearinventory").setExecutor(new ClearInventoryCommand(this));
     }
 
     public void runSync(Runnable runnable) {
@@ -104,7 +106,7 @@ public class UtilitiesPlugin extends JavaPlugin {
             long before = System.currentTimeMillis();
             if (storage instanceof Listener listener) HandlerList.unregisterAll(listener);
             storage.shutdown();
-            config.reload();
+            utilitiesConfig.reload();
             messages.reload();
             initialiseStorage();
             sender.sendMessage(ChatColor.GREEN + "All configurations & storage have been reloaded (" + (System.currentTimeMillis() - before) + "ms)");
@@ -114,7 +116,6 @@ public class UtilitiesPlugin extends JavaPlugin {
             sender.sendMessage(ChatColor.GREEN + "Available subcommands:\n" +
                     " /" + label + " reload - Reloads all configurations & storage");
         }
-
         return true;
     }
 }

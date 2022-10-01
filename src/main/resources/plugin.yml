@@ -42,3 +42,15 @@ commands:
     aliases: [gm2]
     permission: utilities.gamemode
     permission-message: "You don't have the required permission to use this command"
+
+  clearinventory:
+    aliases: [ci, clear, cls]
+    permission: utilities.clearinventory
+    permission-message: "You don't have the required permission to use this command"
+
+permissions:
+  utilites.clearinventory.others:
+    description: "Allows players to clear other player's inventories with the /clearinventory command"
+
+  utilites.gamemode.others:
+    description: "Allows players to switch other player's gamemode with the /gamemode command"

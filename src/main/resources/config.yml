@@ -1,0 +1,31 @@
+
+# What should the plugin use to store it's data
+# Supported: YAML
+# Planned: MongoDB, MySQL, MariaDB
+storage-type: YAML
+
+# Aliases for gamemode names for the /gamemode command
+gamemode-aliases:
+  survival:
+    - "s"
+    - "0"
+  creative:
+    - "c"
+    - "1"
+  adventure:
+    - "a"
+    - "2"
+  spectator:
+    - "sp"
+    - "3"
+
+
+# Used in network-wide notifications
+server-name: global
+
+# Communication serivce for network-wide features
+redis:
+  hostname: 127.0.0.1
+  port: 6379
+  username: default
+  password: SUPER_SECRET_PASSWORD

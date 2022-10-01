@@ -1,8 +1,7 @@
-package me.pyr.utilities.gamemode;
+package me.pyr.utilities.inventory;
 
 import me.pyr.utilities.UtilitiesPlugin;
 import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -13,37 +12,34 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public record GamemodeShortcutCommand(UtilitiesPlugin plugin, GameMode gameMode) implements TabExecutor {
+public record ClearInventoryCommand(UtilitiesPlugin plugin) implements TabExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!sender.hasPermission("utilities.gamemode.others") || args.length == 0) {
+        if (args.length == 0) {
             if (!(sender instanceof Player player)) {
                 sender.sendMessage(plugin.getMessages().get("only-player-command"));
                 return true;
             }
+            player.getInventory().clear();
+            player.sendMessage(plugin.getMessages().get(player, "own-inventory-cleared"));
+        } else {
+            Player player = Bukkit.getPlayer(args[0]);
+            if (player == null) {
+                sender.sendMessage(plugin.getMessages().get("player-not-online", args[0]));
+                return true;
+            }
 
-            player.setGameMode(gameMode);
-            player.sendMessage(plugin.getMessages().get(player, "own-gamemode-set", gameMode.toString()));
-            return true;
+            player.getInventory().clear();
+            player.sendMessage(plugin.getMessages().get(player, "own-inventory-cleared"));
+            sender.sendMessage(plugin.getMessages().get("other-inventory-cleared", player.getName()));
         }
-
-        Player player = Bukkit.getPlayer(args[0]);
-        if (player == null) {
-            sender.sendMessage(plugin.getMessages().get("player-not-online", args[0]));
-            return true;
-        }
-
-        player.setGameMode(gameMode);
-        player.sendMessage(plugin.getMessages().get(player, "own-gamemode-set", gameMode.toString()));
-        sender.sendMessage(plugin.getMessages().get("other-gamemode-set", player.getName(), gameMode.toString()));
-
         return true;
     }
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
-        if (args.length == 1 && sender.hasPermission("utilities.gamemode.others")) {
+        if (args.length == 1 && sender.hasPermission("utilities.clearinventory.others")) {
             return Bukkit.getOnlinePlayers().stream()
                     .map(HumanEntity::getName)
                     .filter(s -> s.toLowerCase().startsWith(args[0].toLowerCase()))

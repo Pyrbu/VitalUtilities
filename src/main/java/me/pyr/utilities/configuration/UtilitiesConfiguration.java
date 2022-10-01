@@ -4,6 +4,7 @@ import com.google.common.base.Charsets;
 import lombok.Getter;
 import me.pyr.utilities.UtilitiesPlugin;
 import me.pyr.utilities.storage.UtilitiesStorageType;
+import org.bukkit.GameMode;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
@@ -12,6 +13,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.HashMap;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class UtilitiesConfiguration {
 
@@ -20,6 +24,7 @@ public class UtilitiesConfiguration {
     private final File file;
 
     @Getter private UtilitiesStorageType storageType;
+    @Getter private final HashMap<GameMode, Set<String>> gameModeAliases = new HashMap<>();
 
     @SuppressWarnings("ConstantConditions")
     public UtilitiesConfiguration(UtilitiesPlugin plugin) {
@@ -52,5 +57,12 @@ public class UtilitiesConfiguration {
             plugin.getLogger().severe("Invalid storage type (" + config.getString("storage-type") + ") Defaulting to " + storageType.toString());
         }
 
+        gameModeAliases.clear();
+        for (GameMode gamemode : GameMode.values()) {
+            Set<String> set = config.getStringList("gamemode-aliases." + gamemode.toString().toLowerCase()).stream()
+                    .map(String::toLowerCase).collect(Collectors.toSet());
+            set.add(gamemode.toString().toLowerCase());
+            gameModeAliases.put(gamemode, set);
+        }
     }
 }

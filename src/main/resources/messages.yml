@@ -1,11 +1,27 @@
 
 # {0}: The correct command usage
 incorrect-usage: "&cIncorrect usage: /{0}"
-only-player-command: "&cOnly players can use this command!"
 
-# {0}: Username
+player-only-command: "&cOnly players can use this command"
+
+# {0}: The player's username
+player-not-online: "&cThere is no player online with the name {0}"
+
+# {0}: Executor's username
 # {1}: Display Name
 # {2}: Command
 command-spy-format: "&7[&3CSPY&7] &f{0} &7-> &b{2}"
+
 command-spy-enabled: "&aCommand spy: ENABLED"
 command-spy-disabled: "&aCommand spy: &cDISABLED"
+
+# {0}: The player who's inventory was cleared
+other-inventory-cleared: "&aYou have cleared {0}'s inventory"
+own-inventory-cleared: "&aYour inventory has been cleared"
+
+# {0}: The gamemode
+own-gamemode-set: "&aYour gamemode has been updated to {0}"
+
+# {0}: The switched player's username
+# {1}: The gamemode
+other-gamemode-set: "&a{0}'s gamemode has been updated to {1}"
