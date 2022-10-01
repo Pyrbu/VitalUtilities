@@ -13,7 +13,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -22,9 +24,18 @@ public class UtilitiesConfiguration {
     private final String FILENAME = "config.yml";
     private final UtilitiesPlugin plugin;
     private final File file;
+    private final List<Runnable> hooks = new ArrayList<>();
 
     @Getter private UtilitiesStorageType storageType;
     @Getter private final HashMap<GameMode, Set<String>> gameModeAliases = new HashMap<>();
+
+    @Getter private String redisHostname;
+    @Getter private int redisPort;
+    @Getter private String redisUsername;
+    @Getter private String redisPassword;
+
+    @Getter private boolean enableNetworkFeatures;
+    @Getter private String networkServerName;
 
     @SuppressWarnings("ConstantConditions")
     public UtilitiesConfiguration(UtilitiesPlugin plugin) {
@@ -64,5 +75,20 @@ public class UtilitiesConfiguration {
             set.add(gamemode.toString().toLowerCase());
             gameModeAliases.put(gamemode, set);
         }
+
+        redisHostname = config.getString("redis.hostname");
+        redisPort = config.getInt("redis.port");
+        redisUsername = config.getString("redis.username");
+        redisPassword = config.getString("redis.password");
+
+        enableNetworkFeatures = config.getBoolean("enable-network-features");
+        networkServerName = config.getString("server-name");
+
+        for (Runnable hook : hooks) hook.run();
     }
+
+    public void registerReloadHook(Runnable runnable) {
+        hooks.add(runnable);
+    }
+
 }

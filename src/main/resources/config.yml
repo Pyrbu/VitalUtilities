@@ -20,6 +20,9 @@ gamemode-aliases:
     - "3"
 
 
+# Should network features be enabled?
+enable-network-features: false
+
 # Used in network-wide notifications
 server-name: global
 

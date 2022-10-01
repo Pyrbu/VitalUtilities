@@ -36,6 +36,5 @@ shadowJar {
 tasks.getByName("compileJava").dependsOn clean
 tasks.getByName("jar").finalizedBy shadowJar
 gradle.buildFinished {
-
     Files.write buildNumberFile.toPath(), buildNumber.toString().getBytes()
 }

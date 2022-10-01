@@ -8,6 +8,7 @@ import me.pyr.utilities.configuration.UtilitiesMessages;
 import me.pyr.utilities.gamemode.GamemodeCommand;
 import me.pyr.utilities.gamemode.GamemodeShortcutCommand;
 import me.pyr.utilities.inventory.ClearInventoryCommand;
+import me.pyr.utilities.network.NetworkConnection;
 import me.pyr.utilities.storage.UtilitiesStorageProvider;
 import me.pyr.utilities.storage.implementations.MongoDBStorage;
 import me.pyr.utilities.storage.implementations.YamlStorage;
@@ -28,6 +29,7 @@ public class UtilitiesPlugin extends JavaPlugin {
 
     @Getter private UtilitiesConfiguration utilitiesConfig;
     @Getter private UtilitiesMessages messages;
+    @Getter private NetworkConnection connection;
 
     @Getter private UtilitiesStorageProvider storage;
 
@@ -40,10 +42,33 @@ public class UtilitiesPlugin extends JavaPlugin {
 
         utilitiesConfig = new UtilitiesConfiguration(this);
         messages = new UtilitiesMessages(this);
+        utilitiesConfig.registerReloadHook(() -> getLogger().info("Reloaded configuration"));
         getLogger().info("Configurations loaded");
 
         initialiseStorage();
+        utilitiesConfig.registerReloadHook(() -> {
+            storage.shutdown();
+            initialiseStorage();
+            getLogger().info("Reloaded storage");
+        });
         getLogger().info("Initialised Storage [" + utilitiesConfig.getStorageType().toString() + "]");
+
+        if (utilitiesConfig.isEnableNetworkFeatures()) {
+            connection = new NetworkConnection(this);
+            getLogger().info("Initialised Network Features");
+        }
+        utilitiesConfig.registerReloadHook(() -> {
+            if (connection != null) {
+                connection.shutdown();
+                if (!utilitiesConfig.isEnableNetworkFeatures()) {
+                    connection = null;
+                    return;
+                }
+            }
+            if (connection == null) connection = new NetworkConnection(this);
+            else connection.connect();
+            getLogger().info("Reloaded network features");
+        });
 
         registerListeners();
         getLogger().info("Registered listeners");
@@ -59,6 +84,7 @@ public class UtilitiesPlugin extends JavaPlugin {
     public void onDisable() {
         if (!enabled) return;
         storage.shutdown();
+        if (connection != null) connection.shutdown();
         getLogger().info("Shutdown complete");
     }
 
@@ -105,10 +131,8 @@ public class UtilitiesPlugin extends JavaPlugin {
         if (args[0].equalsIgnoreCase("reload")) {
             long before = System.currentTimeMillis();
             if (storage instanceof Listener listener) HandlerList.unregisterAll(listener);
-            storage.shutdown();
             utilitiesConfig.reload();
             messages.reload();
-            initialiseStorage();
             sender.sendMessage(ChatColor.GREEN + "All configurations & storage have been reloaded (" + (System.currentTimeMillis() - before) + "ms)");
         }
 
