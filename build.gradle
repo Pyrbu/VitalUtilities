@@ -27,7 +27,7 @@ var buildNumberFile = new File(rootDir, "buildnumber.txt")
 var buildNumber = Integer.parseInt(Files.readString(buildNumberFile.toPath()))
 
 group "me.pyr"
-version "b$buildNumber"
+version "1.0.0-b$buildNumber"
 
 shadowJar {
     archiveClassifier.set "shaded"
@@ -36,5 +36,5 @@ shadowJar {
 tasks.getByName("compileJava").dependsOn clean
 tasks.getByName("jar").finalizedBy shadowJar
 gradle.buildFinished {
-    Files.write buildNumberFile.toPath(), buildNumber.toString().getBytes()
+    Files.write buildNumberFile.toPath(), (buildNumber + 1).toString().getBytes()
 }
