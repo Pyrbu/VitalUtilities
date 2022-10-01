@@ -1,4 +1,7 @@
+# IntelliJ
 .idea
-/target/
 *.iml
-dependency-reduced-pom.xml
+
+# Gradle
+/.gradle/
+/build/

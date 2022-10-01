@@ -1,0 +1,41 @@
+import java.nio.file.Files
+
+plugins {
+    id 'java'
+    id "io.freefair.lombok" version "6.5.1"
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
+    id "moe.nikky.persistentCounter" version "0.0.8-8"
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        url "https://hub.spigotmc.org/nexus/content/repositories/snapshots/"
+    }
+    maven {
+        url "https://repo.extendedclip.com/content/repositories/placeholderapi/"
+    }
+}
+
+dependencies {
+    compileOnly "org.spigotmc:spigot-api:1.19.2-R0.1-SNAPSHOT"
+    compileOnly "me.clip:placeholderapi:2.11.1"
+    implementation "redis.clients:jedis:4.2.3"
+}
+
+var buildNumberFile = new File(rootDir, "buildnumber.txt")
+var buildNumber = Integer.parseInt(Files.readString(buildNumberFile.toPath()))
+
+group "me.pyr"
+version "b$buildNumber"
+
+shadowJar {
+    archiveClassifier.set "shaded"
+}
+
+tasks.getByName("compileJava").dependsOn clean
+tasks.getByName("jar").finalizedBy shadowJar
+gradle.buildFinished {
+
+    Files.write buildNumberFile.toPath(), buildNumber.toString().getBytes()
+}
