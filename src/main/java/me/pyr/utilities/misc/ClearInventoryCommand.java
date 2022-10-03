@@ -1,4 +1,4 @@
-package me.pyr.utilities.inventory;
+package me.pyr.utilities.misc;
 
 import me.pyr.utilities.UtilitiesPlugin;
 import org.bukkit.Bukkit;

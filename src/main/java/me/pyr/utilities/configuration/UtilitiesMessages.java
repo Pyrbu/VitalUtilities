@@ -72,6 +72,7 @@ public class UtilitiesMessages {
 
     public record PapiMessageRecycler(String message) {
         public String get(Player player) {
+            if (player == null) return message;
             return Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI") ? PlaceholderAPI.setPlaceholders(player, message) : message;
         }
     }

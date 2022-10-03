@@ -58,9 +58,29 @@ commands:
     permission: utilities.networkbroadcast
     permission-message: "You don't have the required permission to use this command"
 
+  togglestaffnotifications:
+    aliases: [togglenotifs]
+    permission: utilities.staffnotifications
+    permission-message: "You don't have the required permission to use this command"
+
+  heal:
+    permission: utilities.heal
+    permission-message: "You don't have the required permission to use this command"
+
+  feed:
+    permission: utilities.feed
+    permission-message: "You don't have the required permission to use this command"
+
+
 permissions:
   utilites.clearinventory.others:
     description: "Allows players to clear other player's inventories with the /clearinventory command"
 
   utilites.gamemode.others:
     description: "Allows players to switch other player's gamemode with the /gamemode command"
+
+  utilities.feed.others:
+    description: "Allows players to heal other players with the /feed command"
+
+  utilities.heal.others:
+    description: "Allows players to feed other players with the /heal command"

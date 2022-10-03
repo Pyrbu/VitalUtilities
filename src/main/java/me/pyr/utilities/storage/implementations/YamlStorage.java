@@ -35,6 +35,7 @@ public class YamlStorage implements UtilitiesStorageProvider, Listener {
 
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
         user.setCommandSpyEnabled(config.getBoolean("command-spy-enabled", false));
+        user.setStaffNotificationsEnabled(config.getBoolean("staff-notifications-enabled", true));
         return user;
     }
 
@@ -54,8 +55,9 @@ public class YamlStorage implements UtilitiesStorageProvider, Listener {
 
         YamlConfiguration config = new YamlConfiguration();
         config.set("command-spy-enabled", user.isCommandSpyEnabled());
+        config.set("staff-notifications-enabled", user.isStaffNotificationsEnabled());
 
-        if (!file.exists()) try {
+        try {
             config.save(file);
         } catch (IOException exception) {
             plugin.getLogger().severe("Could not save userdata for " + user.getUuid());

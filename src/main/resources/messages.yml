@@ -4,7 +4,7 @@ prefix: "&7[&6&lVU&7] &e"
 # {0}: The correct command usage
 incorrect-usage: "{P}&cIncorrect usage: /{0}"
 player-only-command: "{P}&cOnly players can use this command"
-no-network-features: "{P}&cThis command requires network features to be enabled and redis credentials to be configured"
+no-network-features: "{P}&cThis command requires network features to be enabled and Redis credentials to be configured"
 
 # {0}: The player's username
 player-not-online: "{P}&cThere is no player online with the name &6{0}"
@@ -14,8 +14,8 @@ player-not-online: "{P}&cThere is no player online with the name &6{0}"
 # {2}: Command
 command-spy-format: "&7[&3CSPY&7] &f{0} &7-> &b{2}"
 
-command-spy-enabled: "{P}Command spy has been enabled"
-command-spy-disabled: "{P}Command spy has been disabled"
+command-spy-enabled: "{P}Command spy has been &6enabled"
+command-spy-disabled: "{P}Command spy has been &6disabled"
 
 # {0}: The player who's inventory was cleared
 other-inventory-cleared: "{P}You have cleared &6{0}&e's inventory"
@@ -30,7 +30,21 @@ other-gamemode-set: "{P}&6{0}&e's gamemode has been updated to &6{1}"
 
 # {0}: The message to be broadcasted
 broadcast: "&6Broadcast &7» &e{0}"
+network-broadcast: "&6Network Broadcast &7» &e{0}"
 
+# {0}: The player's username
+# {1}: The server the player is joining
 notifications-staff-join: "&2[&aSTAFF&2] &a{0} has joined {1}"
+
+# {0}: The player's username
+# {1}: The gamemode the player was switched to
 notifications-staff-gamemode: "&2[&aSTAFF&2] &a{0} has switched their gamemode to {1}"
-notifications-staff-teleport: "&2[&aSTAFF&2] &a{0} teleported to {1}"
+
+notifications-enabled: "{P}Staff notifications have been &6enabled"
+notifications-disabled: "{P}Staff notifications have been &6disabled"
+
+own-heal: "{P}You have been healed"
+other-heal: "{P}You have healed &6{0}"
+
+own-feed: "{P}You have been fed"
+other-feed: "{P}You have fed &6{0}"

@@ -9,8 +9,12 @@ import me.pyr.utilities.configuration.UtilitiesConfiguration;
 import me.pyr.utilities.configuration.UtilitiesMessages;
 import me.pyr.utilities.gamemode.GamemodeCommand;
 import me.pyr.utilities.gamemode.GamemodeShortcutCommand;
-import me.pyr.utilities.inventory.ClearInventoryCommand;
+import me.pyr.utilities.misc.ClearInventoryCommand;
+import me.pyr.utilities.misc.FeedCommand;
+import me.pyr.utilities.misc.HealCommand;
 import me.pyr.utilities.network.NetworkConnection;
+import me.pyr.utilities.staffnotifications.StaffNotificationListener;
+import me.pyr.utilities.staffnotifications.StaffNotificationToggleCommand;
 import me.pyr.utilities.storage.UtilitiesStorageProvider;
 import me.pyr.utilities.storage.implementations.MongoDBStorage;
 import me.pyr.utilities.storage.implementations.YamlStorage;
@@ -100,6 +104,7 @@ public class UtilitiesPlugin extends JavaPlugin {
     private void registerListeners() {
         PluginManager pm = Bukkit.getPluginManager();
         pm.registerEvents(new CommandSpyListener(this), this);
+        pm.registerEvents(new StaffNotificationListener(this), this);
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -114,6 +119,9 @@ public class UtilitiesPlugin extends JavaPlugin {
         getCommand("clearinventory").setExecutor(new ClearInventoryCommand(this));
         getCommand("broadcast").setExecutor(new BroadcastCommand(this));
         getCommand("networkbroadcast").setExecutor(new NetworkBroadcastCommand(this));
+        getCommand("togglestaffnotifications").setExecutor(new StaffNotificationToggleCommand(this));
+        getCommand("heal").setExecutor(new HealCommand(this));
+        getCommand("feed").setExecutor(new FeedCommand(this));
     }
 
     public void runSync(Runnable runnable) {
@@ -145,4 +153,5 @@ public class UtilitiesPlugin extends JavaPlugin {
         }
         return true;
     }
+
 }

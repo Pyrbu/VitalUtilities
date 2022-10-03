@@ -1,6 +1,7 @@
 package me.pyr.utilities.broadcast;
 
 import me.pyr.utilities.UtilitiesPlugin;
+import me.pyr.utilities.util.HexColorUtil;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -17,7 +18,7 @@ public record NetworkBroadcastCommand(UtilitiesPlugin plugin) implements Command
             sender.sendMessage(plugin.getMessages().get("incorrect-usage", label + " <message>"));
             return true;
         }
-        plugin.getNetworkConnection().broadcastMessage(String.join(" ", args));
+        plugin.getNetworkConnection().broadcastMessage(plugin.getMessages().get("network-broadcast", HexColorUtil.translateFully(String.join(" ", args))));
         return true;
     }
 
