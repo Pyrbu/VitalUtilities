@@ -37,15 +37,19 @@ public class UtilitiesMessages {
         reload();
     }
 
-    private void loadDefaults(YamlConfiguration config) {
+    private void loadDefaults() {
         InputStream defaultConfigStream = plugin.getResource(FILENAME);
-        if (defaultConfigStream != null) config.setDefaults(YamlConfiguration.loadConfiguration(new InputStreamReader(defaultConfigStream, Charsets.UTF_8)));
+        if (defaultConfigStream != null) {
+            YamlConfiguration defaults = YamlConfiguration.loadConfiguration(new InputStreamReader(defaultConfigStream, Charsets.UTF_8));
+            String prefix = HexColorUtil.translateFully(defaults.getString("prefix"));
+            for (String key : defaults.getKeys(false)) messages.put(key, HexColorUtil.translateFully(defaults.getString(key)).replace("{P}", prefix));
+        }
     }
 
     public void reload() {
-        YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
-        loadDefaults(config);
         messages.clear();
+        loadDefaults();
+        YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
         String prefix = HexColorUtil.translateFully(config.getString("prefix"));
         for (String key : config.getKeys(false)) messages.put(key, HexColorUtil.translateFully(config.getString(key)).replace("{P}", prefix));
     }

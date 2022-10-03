@@ -43,8 +43,26 @@ notifications-staff-gamemode: "&2[&aSTAFF&2] &a{0} has switched their gamemode t
 notifications-enabled: "{P}Staff notifications have been &6enabled"
 notifications-disabled: "{P}Staff notifications have been &6disabled"
 
-own-heal: "{P}You have been healed"
+# {0}: The player's username
 other-heal: "{P}You have healed &6{0}"
+own-heal: "{P}You have been healed"
 
-own-feed: "{P}You have been fed"
+# {0}: The player's username
 other-feed: "{P}You have fed &6{0}"
+own-feed: "{P}You have been fed"
+
+own-fly-enable: "{P}Set fly mode to &6enabled"
+own-fly-disable: "{P}Set fly mode to &6disabled"
+
+# {0}: The player's username
+other-fly-enable: "{P}Set fly mode to &6enabled &efor &6{0}"
+other-fly-disable: "{P}Set fly mode to &6disabled &efor &6{0}"
+
+# {0}: The player being sudoed's username
+# {1}: The command being sudoed
+sudo-chat: "{P}Forcing &6{0} &eto say &6{1}"
+sudo-command: "{P}Forcing &6{0} &eto execute &6{1}"
+
+tpall: "{P}Teleporting &6all players &eto your location"
+tpall-world: "{P}Teleporting all players in your &6current world &eto your location"
+tpall-radius: "{P}Teleporting all players in &6radius {0} &earound you"

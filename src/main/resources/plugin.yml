@@ -71,6 +71,17 @@ commands:
     permission: utilities.feed
     permission-message: "You don't have the required permission to use this command"
 
+  fly:
+    permission: utilities.fly
+    permission-message: "You don't have the required permission to use this command"
+
+  sudo:
+    permission: utilities.sudo
+    permission-message: "You don't have the required permission to use this command"
+
+  tpall:
+    permission: utilities.tpall
+    permission-message: "You don't have the required permission to use this command"
 
 permissions:
   utilites.clearinventory.others:

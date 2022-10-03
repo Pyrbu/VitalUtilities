@@ -12,6 +12,7 @@ import me.pyr.utilities.gamemode.GamemodeShortcutCommand;
 import me.pyr.utilities.misc.ClearInventoryCommand;
 import me.pyr.utilities.misc.FeedCommand;
 import me.pyr.utilities.misc.HealCommand;
+import me.pyr.utilities.misc.TpallCommand;
 import me.pyr.utilities.network.NetworkMessenger;
 import me.pyr.utilities.staffnotifications.StaffNotificationListener;
 import me.pyr.utilities.staffnotifications.StaffNotificationToggleCommand;
@@ -126,6 +127,7 @@ public class UtilitiesPlugin extends JavaPlugin {
         getCommand("togglestaffnotifications").setExecutor(new StaffNotificationToggleCommand(this));
         getCommand("heal").setExecutor(new HealCommand(this));
         getCommand("feed").setExecutor(new FeedCommand(this));
+        getCommand("tpall").setExecutor(new TpallCommand(this));
     }
 
     public void runSync(Runnable runnable) {
