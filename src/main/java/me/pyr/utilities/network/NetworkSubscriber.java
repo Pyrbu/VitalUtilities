@@ -1,14 +1,59 @@
 package me.pyr.utilities.network;
 
 import me.clip.placeholderapi.PlaceholderAPI;
+import me.pyr.utilities.UtilitiesPlugin;
 import me.pyr.utilities.util.HexColorUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPubSub;
 
 import java.util.Arrays;
 
-public class NetworkSubscriber extends JedisPubSub {
+public class NetworkSubscriber extends JedisPubSub implements Runnable {
+
+    private final UtilitiesPlugin plugin;
+    private final JedisPool jedisPool;
+    private final NetworkMessenger messenger;
+
+    public NetworkSubscriber(UtilitiesPlugin plugin, NetworkMessenger messenger, JedisPool jedisPool) {
+        this.plugin = plugin;
+        this.jedisPool = jedisPool;
+        this.messenger = messenger;
+    }
+
+    @SuppressWarnings("BusyWait")
+    @Override
+    public void run() {
+        boolean first = true;
+        while (!messenger.isClosing() && !Thread.interrupted() && !jedisPool.isClosed()) {
+            try (Jedis jedis = jedisPool.getResource()) {
+                if (first) {
+                    first = false;
+                } else {
+                    plugin.getLogger().info("Redis pubsub connection re-established");
+                }
+
+                jedis.subscribe(this, NetworkMessenger.CHANNEL_NAME); // blocking call
+            } catch (Exception e) {
+                if (messenger.isClosing()) {
+                    return;
+                }
+
+                plugin.getLogger().warning("Redis pubsub connection dropped, trying to re-open the connection");
+                try {
+                    unsubscribe();
+                } catch (Exception ignored) {}
+
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException ie) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+        }
+    }
 
     @Override
     public void onMessage(String channel, String message) {

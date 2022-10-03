@@ -12,7 +12,7 @@ import me.pyr.utilities.gamemode.GamemodeShortcutCommand;
 import me.pyr.utilities.misc.ClearInventoryCommand;
 import me.pyr.utilities.misc.FeedCommand;
 import me.pyr.utilities.misc.HealCommand;
-import me.pyr.utilities.network.NetworkConnection;
+import me.pyr.utilities.network.NetworkMessenger;
 import me.pyr.utilities.staffnotifications.StaffNotificationListener;
 import me.pyr.utilities.staffnotifications.StaffNotificationToggleCommand;
 import me.pyr.utilities.storage.UtilitiesStorageProvider;
@@ -36,7 +36,7 @@ public class UtilitiesPlugin extends JavaPlugin {
 
     @Getter private UtilitiesConfiguration utilitiesConfig;
     @Getter private UtilitiesMessages messages;
-    @Getter private NetworkConnection networkConnection;
+    @Getter private NetworkMessenger networkConnection;
 
     @Getter private UtilitiesStorageProvider storage;
 
@@ -64,7 +64,7 @@ public class UtilitiesPlugin extends JavaPlugin {
         getLogger().info("Initialised Storage [" + utilitiesConfig.getStorageType().toString() + "]");
 
         if (utilitiesConfig.isEnableNetworkFeatures()) {
-            networkConnection = new NetworkConnection(this);
+            networkConnection = new NetworkMessenger(this);
             getLogger().info("Initialised Network Features");
         }
         utilitiesConfig.registerReloadHook(() -> {
@@ -75,7 +75,7 @@ public class UtilitiesPlugin extends JavaPlugin {
                     return;
                 }
             }
-            if (networkConnection == null) networkConnection = new NetworkConnection(this);
+            if (networkConnection == null) networkConnection = new NetworkMessenger(this);
             else networkConnection.connect();
             getLogger().info("Reloaded network features");
         });
