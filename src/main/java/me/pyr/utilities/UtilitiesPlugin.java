@@ -18,6 +18,7 @@ import me.pyr.utilities.staffnotifications.StaffNotificationToggleCommand;
 import me.pyr.utilities.storage.UtilitiesStorageProvider;
 import me.pyr.utilities.storage.implementations.MongoDBStorage;
 import me.pyr.utilities.storage.implementations.YamlStorage;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -45,6 +46,9 @@ public class UtilitiesPlugin extends JavaPlugin {
         getServer().getLogger().info(ChatColor.GOLD + " \\  / |  |   " + ChatColor.YELLOW + getDescription().getName() + " " + ChatColor.GOLD + "v" + getDescription().getVersion());
         getServer().getLogger().info(ChatColor.GOLD + "  \\/  |__|   " + ChatColor.GRAY + "Made with " + ChatColor.RED + "\u2764 " + ChatColor.GRAY + " by " + String.join(", ", getDescription().getAuthors()));
         getServer().getLogger().info("");
+
+        // BStats Metrics
+        new Metrics(this, 16568);
 
         utilitiesConfig = new UtilitiesConfiguration(this);
         messages = new UtilitiesMessages(this);
