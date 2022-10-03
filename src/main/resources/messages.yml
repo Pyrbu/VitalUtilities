@@ -1,27 +1,36 @@
 
-# {0}: The correct command usage
-incorrect-usage: "&cIncorrect usage: /{0}"
+prefix: "&7[&6&lVU&7] &e"
 
-player-only-command: "&cOnly players can use this command"
+# {0}: The correct command usage
+incorrect-usage: "{P}&cIncorrect usage: /{0}"
+player-only-command: "{P}&cOnly players can use this command"
+no-network-features: "{P}&cThis command requires network features to be enabled and redis credentials to be configured"
 
 # {0}: The player's username
-player-not-online: "&cThere is no player online with the name {0}"
+player-not-online: "{P}&cThere is no player online with the name &6{0}"
 
 # {0}: Executor's username
 # {1}: Display Name
 # {2}: Command
 command-spy-format: "&7[&3CSPY&7] &f{0} &7-> &b{2}"
 
-command-spy-enabled: "&aCommand spy: ENABLED"
-command-spy-disabled: "&aCommand spy: &cDISABLED"
+command-spy-enabled: "{P}Command spy has been enabled"
+command-spy-disabled: "{P}Command spy has been disabled"
 
 # {0}: The player who's inventory was cleared
-other-inventory-cleared: "&aYou have cleared {0}'s inventory"
-own-inventory-cleared: "&aYour inventory has been cleared"
+other-inventory-cleared: "{P}You have cleared &6{0}&e's inventory"
+own-inventory-cleared: "{P}Your inventory has been cleared"
 
 # {0}: The gamemode
-own-gamemode-set: "&aYour gamemode has been updated to {0}"
+own-gamemode-set: "{P}Your gamemode has been updated to &6{0}"
 
 # {0}: The switched player's username
 # {1}: The gamemode
-other-gamemode-set: "&a{0}'s gamemode has been updated to {1}"
+other-gamemode-set: "{P}&6{0}&e's gamemode has been updated to &6{1}"
+
+# {0}: The message to be broadcasted
+broadcast: "&6Broadcast &7» &e{0}"
+
+notifications-staff-join: "&2[&aSTAFF&2] &a{0} has joined {1}"
+notifications-staff-gamemode: "&2[&aSTAFF&2] &a{0} has switched their gamemode to {1}"
+notifications-staff-teleport: "&2[&aSTAFF&2] &a{0} teleported to {1}"

@@ -1,6 +1,8 @@
 package me.pyr.utilities;
 
 import lombok.Getter;
+import me.pyr.utilities.broadcast.BroadcastCommand;
+import me.pyr.utilities.broadcast.NetworkBroadcastCommand;
 import me.pyr.utilities.commandspy.CommandSpyCommand;
 import me.pyr.utilities.commandspy.CommandSpyListener;
 import me.pyr.utilities.configuration.UtilitiesConfiguration;
@@ -29,16 +31,16 @@ public class UtilitiesPlugin extends JavaPlugin {
 
     @Getter private UtilitiesConfiguration utilitiesConfig;
     @Getter private UtilitiesMessages messages;
-    @Getter private NetworkConnection connection;
+    @Getter private NetworkConnection networkConnection;
 
     @Getter private UtilitiesStorageProvider storage;
 
     @Override
     public void onEnable() {
-        getLogger().info(" ");
-        getLogger().info("Welcome to " + getDescription().getName() + " v" + getDescription().getVersion());
-        getLogger().info("Made with love by " + String.join(", ", getDescription().getAuthors()));
-        getLogger().info(" ");
+        getServer().getLogger().info("");
+        getServer().getLogger().info(ChatColor.GOLD + " \\  / |  |   " + ChatColor.YELLOW + getDescription().getName() + " " + ChatColor.GOLD + "v" + getDescription().getVersion());
+        getServer().getLogger().info(ChatColor.GOLD + "  \\/  |__|   " + ChatColor.GRAY + "Made with " + ChatColor.RED + "\u2764 " + ChatColor.GRAY + " by " + String.join(", ", getDescription().getAuthors()));
+        getServer().getLogger().info("");
 
         utilitiesConfig = new UtilitiesConfiguration(this);
         messages = new UtilitiesMessages(this);
@@ -54,19 +56,19 @@ public class UtilitiesPlugin extends JavaPlugin {
         getLogger().info("Initialised Storage [" + utilitiesConfig.getStorageType().toString() + "]");
 
         if (utilitiesConfig.isEnableNetworkFeatures()) {
-            connection = new NetworkConnection(this);
+            networkConnection = new NetworkConnection(this);
             getLogger().info("Initialised Network Features");
         }
         utilitiesConfig.registerReloadHook(() -> {
-            if (connection != null) {
-                connection.shutdown();
+            if (networkConnection != null) {
+                networkConnection.shutdown();
                 if (!utilitiesConfig.isEnableNetworkFeatures()) {
-                    connection = null;
+                    networkConnection = null;
                     return;
                 }
             }
-            if (connection == null) connection = new NetworkConnection(this);
-            else connection.connect();
+            if (networkConnection == null) networkConnection = new NetworkConnection(this);
+            else networkConnection.connect();
             getLogger().info("Reloaded network features");
         });
 
@@ -77,14 +79,13 @@ public class UtilitiesPlugin extends JavaPlugin {
         getLogger().info("Registered commands");
 
         enabled = true;
-        getLogger().info("Plugin ready");
     }
 
     @Override
     public void onDisable() {
         if (!enabled) return;
         storage.shutdown();
-        if (connection != null) connection.shutdown();
+        if (networkConnection != null) networkConnection.shutdown();
         getLogger().info("Shutdown complete");
     }
 
@@ -111,6 +112,8 @@ public class UtilitiesPlugin extends JavaPlugin {
         getCommand("gma").setExecutor(new GamemodeShortcutCommand(this, GameMode.ADVENTURE));
         getCommand("gmsp").setExecutor(new GamemodeShortcutCommand(this, GameMode.SPECTATOR));
         getCommand("clearinventory").setExecutor(new ClearInventoryCommand(this));
+        getCommand("broadcast").setExecutor(new BroadcastCommand(this));
+        getCommand("networkbroadcast").setExecutor(new NetworkBroadcastCommand(this));
     }
 
     public void runSync(Runnable runnable) {

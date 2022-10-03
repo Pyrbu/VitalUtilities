@@ -23,8 +23,19 @@ group "me.pyr"
 version "1.0.0"
 
 shadowJar {
-    archiveClassifier.set "shaded"
+    archiveClassifier.set ""
 }
 
-tasks.getByName("compileJava").dependsOn clean
-tasks.getByName("jar").finalizedBy shadowJar
+import com.github.jengelman.gradle.plugins.shadow.tasks.ConfigureShadowRelocation
+task relocateShadowJar(type: ConfigureShadowRelocation) {
+    target = tasks.shadowJar
+    prefix = "me.pyr.utilities.libraries"
+}
+
+processResources {
+    expand("version": version)
+}
+
+tasks.shadowJar.dependsOn tasks.relocateShadowJar
+tasks.compileJava.dependsOn clean
+tasks.jar.finalizedBy shadowJar

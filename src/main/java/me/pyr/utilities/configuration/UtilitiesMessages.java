@@ -46,7 +46,8 @@ public class UtilitiesMessages {
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
         loadDefaults(config);
         messages.clear();
-        for (String key : config.getKeys(false)) messages.put(key, HexColorUtil.translateFully(config.getString(key)));
+        String prefix = HexColorUtil.translateFully(config.getString("prefix"));
+        for (String key : config.getKeys(false)) messages.put(key, HexColorUtil.translateFully(config.getString(key)).replace("{P}", prefix));
     }
 
     private String format(String id, String[] strings) {

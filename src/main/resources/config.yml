@@ -26,12 +26,6 @@ enable-network-features: false
 # Used in network-wide notifications
 server-name: global
 
-staff-notifications:
-  join: true
-  gamemode-change: true
-  teleport: true
-
-
 # Communication serivce for network-wide features
 redis:
   hostname: 127.0.0.1

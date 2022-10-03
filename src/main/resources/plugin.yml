@@ -1,7 +1,7 @@
 name: VitalUtilities
 
 authors: [Pyr#6969]
-version: ${project.version}
+version: ${version}
 
 main: me.pyr.utilities.UtilitiesPlugin
 api-version: 1.19
@@ -46,6 +46,16 @@ commands:
   clearinventory:
     aliases: [ci, clear, cls]
     permission: utilities.clearinventory
+    permission-message: "You don't have the required permission to use this command"
+
+  broadcast:
+    aliases: [bc]
+    permission: utilities.broadcast
+    permission-message: "You don't have the required permission to use this command"
+
+  networkbroadcast:
+    aliases: [nbc, alert]
+    permission: utilities.networkbroadcast
     permission-message: "You don't have the required permission to use this command"
 
 permissions:
