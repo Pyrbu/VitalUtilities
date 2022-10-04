@@ -3,13 +3,13 @@ name: VitalUtilities
 authors: [Pyr#6969]
 version: ${version}
 
-main: me.pyr.utilities.UtilitiesPlugin
-api-version: 1.19
+main: lol.pyr.utilities.UtilitiesPlugin
+api-version: 1.13
 softdepend: [PlaceholderAPI]
 
 commands:
   vitalutilities:
-    aliases: [vital, utilities]
+    aliases: [vital, utilities, vu]
     permission: utilities.admin
     permission-message: "You don't have the required permission to use this command"
 
@@ -59,7 +59,7 @@ commands:
     permission-message: "You don't have the required permission to use this command"
 
   togglestaffnotifications:
-    aliases: [togglenotifs]
+    aliases: [togglenotifs, notifs]
     permission: utilities.staffnotifications
     permission-message: "You don't have the required permission to use this command"
 

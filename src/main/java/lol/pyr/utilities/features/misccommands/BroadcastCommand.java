@@ -1,4 +1,4 @@
-package lol.pyr.utilities.broadcast;
+package lol.pyr.utilities.features.misccommands;
 
 import lol.pyr.utilities.UtilitiesPlugin;
 import lol.pyr.utilities.configuration.UtilitiesMessages;

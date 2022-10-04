@@ -1,4 +1,4 @@
-package lol.pyr.utilities.commandspy;
+package lol.pyr.utilities.features.staffnotifications;
 
 import lol.pyr.utilities.UtilitiesPlugin;
 import org.bukkit.command.Command;
@@ -6,7 +6,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public record CommandSpyCommand(UtilitiesPlugin plugin) implements CommandExecutor {
+public record StaffNotificationToggleCommand(UtilitiesPlugin plugin) implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -15,10 +15,9 @@ public record CommandSpyCommand(UtilitiesPlugin plugin) implements CommandExecut
             return true;
         }
         plugin.runAsync(() -> plugin.getStorage().getUser(player.getUniqueId()).thenAccept((user) -> {
-            user.setCommandSpyEnabled(!user.isCommandSpyEnabled());
-            if (user.isCommandSpyEnabled()) sender.sendMessage(plugin.getMessages().get(player, "command-spy-enabled"));
-            else sender.sendMessage(plugin.getMessages().get(player, "command-spy-disabled"));
-            plugin.getStorage().updateUser(user);
+            user.setStaffNotificationsEnabled(!user.isStaffNotificationsEnabled());
+            if (user.isStaffNotificationsEnabled()) sender.sendMessage(plugin.getMessages().get(player, "notifications-enabled"));
+            else sender.sendMessage(plugin.getMessages().get(player, "notifications-disabled"));
         }));
         return true;
     }

@@ -41,15 +41,27 @@ public class NetworkMessenger {
     }
 
     public void broadcastMessage(String message) {
-        try (Jedis jedis = jedisPool.getResource()) {
-            plugin.runAsync(() -> jedis.publish(CHANNEL_NAME, "broadcast;" + message));
-        }
+        plugin.runAsync(() -> {
+            try (Jedis jedis = jedisPool.getResource()) {
+                jedis.publish(CHANNEL_NAME, "broadcast;" + message);
+            }
+        });
     }
 
     public void broadcastWithPermission(String permission, String message) {
-        try (Jedis jedis = jedisPool.getResource()) {
-            plugin.runAsync(() -> jedis.publish(CHANNEL_NAME, "permissionbroadcast;" + permission + ";" + message));
-        }
+        plugin.runAsync(() -> {
+            try (Jedis jedis = jedisPool.getResource()) {
+                jedis.publish(CHANNEL_NAME, "permissionbroadcast;" + permission + ";" + message);
+            }
+        });
+    }
+
+    public void staffNotification(String username, String message) {
+        plugin.runAsync(() -> {
+            try (Jedis jedis = jedisPool.getResource()) {
+                jedis.publish(CHANNEL_NAME, "staffnotification;" + username + ";" + message);
+            }
+        });
     }
 
 }

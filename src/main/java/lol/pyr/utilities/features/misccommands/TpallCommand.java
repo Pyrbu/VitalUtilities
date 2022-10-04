@@ -1,7 +1,8 @@
-package lol.pyr.utilities.misc;
+package lol.pyr.utilities.features.misccommands;
 
 import lol.pyr.utilities.UtilitiesPlugin;
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -22,8 +23,18 @@ public record TpallCommand(UtilitiesPlugin plugin) implements TabExecutor {
         }
         TpallType type = TpallType.ALL;
         Float radius = null;
+        World world = player.getWorld();
         if (args.length > 0) {
-            if (args[0].equalsIgnoreCase("world")) type = TpallType.WORLD;
+            if (args[0].equalsIgnoreCase("world")) {
+                type = TpallType.WORLD;
+                if (args.length > 1) {
+                    world = Bukkit.getWorld(args[1]);
+                    if (world == null) {
+                        sender.sendMessage(plugin.getMessages().get(player, "no-world-exists", args[1]));
+                        return true;
+                    }
+                }
+            }
             else if (args[0].equalsIgnoreCase("radius")) {
                 if (args.length != 2) {
                     sender.sendMessage(plugin.getMessages().get(player, "incorrect-usage", label + " radius <number>"));
@@ -38,30 +49,43 @@ public record TpallCommand(UtilitiesPlugin plugin) implements TabExecutor {
                 }
             }
         }
+        int count = 0;
         switch (type) {
             case ALL -> {
-                for (Player p : Bukkit.getOnlinePlayers()) if (p != player) p.teleport(player);
-                sender.sendMessage(plugin.getMessages().get(player, "tpall"));
+                for (Player p : Bukkit.getOnlinePlayers()) if (p != player) {
+                    p.teleport(player);
+                    count++;
+                }
             }
             case WORLD -> {
-                for (Player p : Bukkit.getOnlinePlayers()) if (p != player && p.getWorld() == player.getWorld()) p.teleport(player);
-                sender.sendMessage(plugin.getMessages().get(player, "tpall-world"));
+                for (Player p : Bukkit.getOnlinePlayers()) if (p != player && world == p.getWorld()) {
+                    p.teleport(player);
+                    count++;
+                }
             }
             case RADIUS -> {
                 for (Player p : Bukkit.getOnlinePlayers())
-                    if (p != player && p.getWorld() == player.getWorld() && p.getLocation().distance(player.getLocation()) <= radius)
+                    if (p != player && p.getWorld() == player.getWorld() && p.getLocation().distance(player.getLocation()) <= radius) {
                         p.teleport(player);
-                sender.sendMessage(plugin.getMessages().get(player, "tpall-radius", radius.toString()));
+                        count++;
+                    }
             }
         }
+        sender.sendMessage(plugin.getMessages().get(player, "tpall", "" + count));
         return true;
     }
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
         if (args.length == 1) {
-            return Stream.of("all", "radius", "world")
+            return Stream.of("all", "radius", "world", "help")
                     .filter(s -> s.startsWith(args[0].toLowerCase()))
+                    .collect(Collectors.toList());
+        }
+        if (args.length == 2 && args[0].equalsIgnoreCase("world")) {
+            return Bukkit.getWorlds().stream()
+                    .map(World::getName)
+                    .filter(s -> s.toLowerCase().startsWith(args[0].toLowerCase()))
                     .collect(Collectors.toList());
         }
         return new ArrayList<>();

@@ -24,11 +24,12 @@ public class UtilitiesMessages {
     private final Map<String, String> messages = new HashMap<>();
     private final File file;
 
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "ResultOfMethodCallIgnored"})
     public UtilitiesMessages(UtilitiesPlugin plugin) {
         this.plugin = plugin;
         this.file = new File(plugin.getDataFolder(), FILENAME);
         if (!file.exists()) try {
+            if (!file.getParentFile().exists()) file.getParentFile().mkdirs();
             Files.copy(plugin.getResource(FILENAME), file.toPath(), StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException exception) {
             plugin.getLogger().severe("Could not copy default messages.yml file!");

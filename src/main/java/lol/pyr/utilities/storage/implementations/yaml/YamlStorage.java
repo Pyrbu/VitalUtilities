@@ -1,34 +1,29 @@
-package lol.pyr.utilities.storage.implementations;
+package lol.pyr.utilities.storage.implementations.yaml;
 
 import lol.pyr.utilities.UtilitiesPlugin;
-import lol.pyr.utilities.storage.UtilitiesStorageProvider;
-import lol.pyr.utilities.storage.UtilitiesUser;
+import lol.pyr.utilities.storage.StorageImplementationProvider;
+import lol.pyr.utilities.storage.model.User;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 
-public class YamlStorage implements UtilitiesStorageProvider, Listener {
+public class YamlStorage implements StorageImplementationProvider, Listener {
 
     private final UtilitiesPlugin plugin;
-    private final Map<UUID, UtilitiesUser> cache = new HashMap<>();
+    private final Map<UUID, User> cache = new HashMap<>();
 
     public YamlStorage(UtilitiesPlugin plugin) {
         this.plugin = plugin;
     }
 
-    private UtilitiesUser loadUser(UUID uuid) {
+    public User loadUser(UUID uuid) {
         File file = new File(plugin.getDataFolder(), "users/" + uuid.toString() + ".yml");
-        UtilitiesUser user = new UtilitiesUser(uuid);
+        User user = new User(uuid);
         if (!file.exists()) return user;
 
         // TODO: Reminder to always add user values here
@@ -40,7 +35,7 @@ public class YamlStorage implements UtilitiesStorageProvider, Listener {
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    private void saveUser(UtilitiesUser user) {
+    public void saveUser(User user) {
         File file = new File(plugin.getDataFolder(), "users/" + user.getUuid().toString() + ".yml");
 
         if (!file.exists()) try {
@@ -66,39 +61,9 @@ public class YamlStorage implements UtilitiesStorageProvider, Listener {
     }
 
     @Override
-    public CompletableFuture<UtilitiesUser> getUser(UUID uuid) {
-        CompletableFuture<UtilitiesUser> future = new CompletableFuture<>();
-        if (cache.containsKey(uuid)) future.complete(cache.get(uuid));
-        else plugin.runAsync(() -> {
-            UtilitiesUser user = loadUser(uuid);
-            cache.put(uuid, user);
-            future.complete(user);
-        });
-        return future;
-    }
-
-    @Override
-    public void updateUser(UtilitiesUser user) {
-        if (!user.equals(cache.get(user.getUuid()))) cache.put(user.getUuid(), user);
-    }
-
-    @Override
     public void shutdown() {
-        for (UtilitiesUser user : cache.values()) saveUser(user);
+        for (User user : cache.values()) saveUser(user);
         cache.clear();
-    }
-
-    @EventHandler(priority = EventPriority.LOWEST)
-    public void onPlayerJoin(PlayerJoinEvent event) {
-        final UUID uuid = event.getPlayer().getUniqueId();
-        plugin.runAsync(() -> cache.put(uuid, loadUser(uuid)));
-    }
-
-    @EventHandler
-    public void onPlayerQuit(PlayerQuitEvent event) {
-        final UtilitiesUser user = cache.get(event.getPlayer().getUniqueId());
-        if (user == null) return;
-        plugin.runAsync(() -> saveUser(user));
     }
 
 }

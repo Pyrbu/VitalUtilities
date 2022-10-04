@@ -1,17 +1,17 @@
-package lol.pyr.utilities.storage;
+package lol.pyr.utilities.storage.model;
 
 import lombok.Data;
 
 import java.util.UUID;
 
 @Data
-public class UtilitiesUser {
+public class User {
 
     private final UUID uuid;
     private boolean commandSpyEnabled;
     private boolean staffNotificationsEnabled;
 
-    public UtilitiesUser(UUID uuid) {
+    public User(UUID uuid) {
         this.uuid = uuid;
     }
 }

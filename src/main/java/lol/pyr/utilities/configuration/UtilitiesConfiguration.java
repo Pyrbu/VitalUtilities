@@ -2,7 +2,7 @@ package lol.pyr.utilities.configuration;
 
 import com.google.common.base.Charsets;
 import lol.pyr.utilities.UtilitiesPlugin;
-import lol.pyr.utilities.storage.UtilitiesStorageType;
+import lol.pyr.utilities.storage.implementations.StorageType;
 import lombok.Getter;
 import org.bukkit.GameMode;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -26,7 +26,7 @@ public class UtilitiesConfiguration {
     private final File file;
     private final List<Runnable> hooks = new ArrayList<>();
 
-    @Getter private UtilitiesStorageType storageType;
+    @Getter private StorageType storageType;
     @Getter private final HashMap<GameMode, Set<String>> gameModeAliases = new HashMap<>();
 
     @Getter private String redisHostname;
@@ -37,11 +37,12 @@ public class UtilitiesConfiguration {
     @Getter private boolean enableNetworkFeatures;
     @Getter private String networkServerName;
 
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "ResultOfMethodCallIgnored"})
     public UtilitiesConfiguration(UtilitiesPlugin plugin) {
         this.plugin = plugin;
         this.file = new File(plugin.getDataFolder(), FILENAME);
         if (!file.exists()) try {
+            if (!file.getParentFile().exists()) file.getParentFile().mkdirs();
             Files.copy(plugin.getResource(FILENAME), file.toPath(), StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException exception) {
             plugin.getLogger().severe("Could not copy default messages.yml file!");
@@ -62,9 +63,9 @@ public class UtilitiesConfiguration {
         loadDefaults(config);
 
         try {
-            storageType = UtilitiesStorageType.valueOf(config.getString("storage-type"));
+            storageType = StorageType.valueOf(config.getString("storage-type"));
         } catch (IllegalArgumentException ex) {
-            storageType = UtilitiesStorageType.YAML;
+            storageType = StorageType.YAML;
             plugin.getLogger().severe("Invalid storage type (" + config.getString("storage-type") + ") Defaulting to " + storageType.toString());
         }
 

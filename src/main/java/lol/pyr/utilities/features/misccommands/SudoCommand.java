@@ -1,4 +1,4 @@
-package lol.pyr.utilities.misc;
+package lol.pyr.utilities.features.misccommands;
 
 import lol.pyr.utilities.UtilitiesPlugin;
 import org.bukkit.Bukkit;

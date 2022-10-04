@@ -1,34 +1,28 @@
 package lol.pyr.utilities;
 
-import lombok.Getter;
-import lol.pyr.utilities.broadcast.BroadcastCommand;
-import lol.pyr.utilities.broadcast.NetworkBroadcastCommand;
-import lol.pyr.utilities.commandspy.CommandSpyCommand;
-import lol.pyr.utilities.commandspy.CommandSpyListener;
+import lol.pyr.utilities.features.misccommands.*;
+import lol.pyr.utilities.features.commandspy.CommandSpyCommand;
+import lol.pyr.utilities.features.commandspy.CommandSpyListener;
 import lol.pyr.utilities.configuration.UtilitiesConfiguration;
 import lol.pyr.utilities.configuration.UtilitiesMessages;
-import lol.pyr.utilities.gamemode.GamemodeCommand;
-import lol.pyr.utilities.gamemode.GamemodeShortcutCommand;
-import lol.pyr.utilities.misc.ClearInventoryCommand;
-import lol.pyr.utilities.misc.FeedCommand;
-import lol.pyr.utilities.misc.HealCommand;
-import lol.pyr.utilities.misc.TpallCommand;
 import lol.pyr.utilities.network.NetworkMessenger;
-import lol.pyr.utilities.staffnotifications.StaffNotificationListener;
-import lol.pyr.utilities.staffnotifications.StaffNotificationToggleCommand;
-import lol.pyr.utilities.storage.UtilitiesStorageProvider;
-import lol.pyr.utilities.storage.implementations.MongoDBStorage;
-import lol.pyr.utilities.storage.implementations.YamlStorage;
+import lol.pyr.utilities.features.staffnotifications.StaffNotificationListener;
+import lol.pyr.utilities.features.staffnotifications.StaffNotificationToggleCommand;
+import lol.pyr.utilities.storage.StorageCacheLayer;
+import lombok.Getter;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.event.HandlerList;
-import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @SuppressWarnings("unused")
 public class UtilitiesPlugin extends JavaPlugin {
@@ -39,7 +33,7 @@ public class UtilitiesPlugin extends JavaPlugin {
     @Getter private UtilitiesMessages messages;
     @Getter private NetworkMessenger networkConnection;
 
-    @Getter private UtilitiesStorageProvider storage;
+    @Getter private StorageCacheLayer storage;
 
     @Override
     public void onEnable() {
@@ -99,11 +93,7 @@ public class UtilitiesPlugin extends JavaPlugin {
     }
 
     private void initialiseStorage() {
-        switch (utilitiesConfig.getStorageType()) {
-            case YAML -> storage = new YamlStorage(this);
-            case MONGODB -> storage = new MongoDBStorage(this);
-        }
-        if (storage instanceof Listener listener) Bukkit.getPluginManager().registerEvents(listener, this);
+        storage = new StorageCacheLayer(this, utilitiesConfig.getStorageType());
     }
 
     private void registerListeners() {
@@ -128,6 +118,8 @@ public class UtilitiesPlugin extends JavaPlugin {
         getCommand("heal").setExecutor(new HealCommand(this));
         getCommand("feed").setExecutor(new FeedCommand(this));
         getCommand("tpall").setExecutor(new TpallCommand(this));
+        getCommand("fly").setExecutor(new FlyCommand(this));
+        getCommand("sudo").setExecutor(new SudoCommand(this));
     }
 
     public void runSync(Runnable runnable) {
@@ -147,7 +139,6 @@ public class UtilitiesPlugin extends JavaPlugin {
 
         if (args[0].equalsIgnoreCase("reload")) {
             long before = System.currentTimeMillis();
-            if (storage instanceof Listener listener) HandlerList.unregisterAll(listener);
             utilitiesConfig.reload();
             messages.reload();
             sender.sendMessage(ChatColor.GREEN + "All configurations & storage have been reloaded (" + (System.currentTimeMillis() - before) + "ms)");
@@ -158,6 +149,16 @@ public class UtilitiesPlugin extends JavaPlugin {
                     " /" + label + " reload - Reloads all configurations & storage");
         }
         return true;
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
+        if (args.length == 1) {
+            return Stream.of("reload", "help")
+                    .filter(s -> s.startsWith(args[0].toLowerCase()))
+                    .collect(Collectors.toList());
+        }
+        return new ArrayList<>();
     }
 
 }

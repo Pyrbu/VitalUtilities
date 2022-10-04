@@ -1,7 +1,8 @@
-package lol.pyr.utilities.misc;
+package lol.pyr.utilities.features.misccommands;
 
 import lol.pyr.utilities.UtilitiesPlugin;
 import org.bukkit.Bukkit;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -12,19 +13,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public record FeedCommand(UtilitiesPlugin plugin) implements TabExecutor {
+public record HealCommand(UtilitiesPlugin plugin) implements TabExecutor {
 
     @Override
+    @SuppressWarnings("ConstantConditions")
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!sender.hasPermission("utilities.feed.others") || args.length == 0) {
+        if (!sender.hasPermission("utilities.heal.others") || args.length == 0) {
             if (!(sender instanceof Player player)) {
                 sender.sendMessage(plugin.getMessages().get("only-player-command"));
                 return true;
             }
 
-            player.setFoodLevel(20);
-            player.setSaturation(20);
-            player.sendMessage(plugin.getMessages().get(player, "own-feed"));
+            player.setHealth(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
+            player.sendMessage(plugin.getMessages().get(player, "own-heal"));
             return true;
         }
 
@@ -34,16 +35,15 @@ public record FeedCommand(UtilitiesPlugin plugin) implements TabExecutor {
             return true;
         }
 
-        player.setFoodLevel(20);
-        player.setSaturation(20);
-        player.sendMessage(plugin.getMessages().get(player, "own-feed"));
-        sender.sendMessage(plugin.getMessages().get("other-feed", player.getName()));
+        player.setHealth(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
+        player.sendMessage(plugin.getMessages().get(player, "own-heal"));
+        sender.sendMessage(plugin.getMessages().get("other-heal", player.getName()));
         return true;
     }
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
-        if (args.length == 1 && sender.hasPermission("utilities.feed.others")) {
+        if (args.length == 1 && sender.hasPermission("utilities.heal.others")) {
             return Bukkit.getOnlinePlayers().stream()
                     .map(HumanEntity::getName)
                     .filter(s -> s.toLowerCase().startsWith(args[0].toLowerCase()))

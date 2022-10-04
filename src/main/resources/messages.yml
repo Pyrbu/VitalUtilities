@@ -63,6 +63,7 @@ other-fly-disable: "{P}Set fly mode to &6disabled &efor &6{0}"
 sudo-chat: "{P}Forcing &6{0} &eto say &6{1}"
 sudo-command: "{P}Forcing &6{0} &eto execute &6{1}"
 
-tpall: "{P}Teleporting &6all players &eto your location"
-tpall-world: "{P}Teleporting all players in your &6current world &eto your location"
-tpall-radius: "{P}Teleporting all players in &6radius {0} &earound you"
+# {0}: The amount of players
+tpall: "{P}Teleported &6{0} players &eto your location"
+
+no-world-exists: "{P}No world with the name &6{0} &eexists"

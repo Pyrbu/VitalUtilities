@@ -1,4 +1,4 @@
-package lol.pyr.utilities.misc;
+package lol.pyr.utilities.features.misccommands;
 
 import lol.pyr.utilities.UtilitiesPlugin;
 import org.bukkit.Bukkit;
@@ -12,39 +12,38 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public record FlyCommand(UtilitiesPlugin plugin) implements TabExecutor {
+public record FeedCommand(UtilitiesPlugin plugin) implements TabExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        Player player;
-        if (sender.hasPermission("utilities.fly.others") && args.length > 0) {
-            player = Bukkit.getPlayer(args[0]);
-        } else if (!(sender instanceof Player)) {
-            sender.sendMessage(plugin.getMessages().get("only-player-command"));
+        if (!sender.hasPermission("utilities.feed.others") || args.length == 0) {
+            if (!(sender instanceof Player player)) {
+                sender.sendMessage(plugin.getMessages().get("only-player-command"));
+                return true;
+            }
+
+            player.setFoodLevel(20);
+            player.setSaturation(20);
+            player.sendMessage(plugin.getMessages().get(player, "own-feed"));
             return true;
-        } else {
-            player = (Player) sender;
         }
 
+        Player player = Bukkit.getPlayer(args[0]);
         if (player == null) {
             sender.sendMessage(plugin.getMessages().get("player-not-online", args[0]));
             return true;
         }
 
-        player.setAllowFlight(!player.getAllowFlight());
-        if (player.getAllowFlight()) {
-            player.sendMessage(plugin.getMessages().get(player, "own-flying-enable"));
-            if (player != sender) sender.sendMessage(plugin.getMessages().get("other-flying-enable", player.getName()));
-        } else {
-            player.sendMessage(plugin.getMessages().get(player, "own-flying-disable"));
-            if (player != sender) sender.sendMessage(plugin.getMessages().get("other-flying-disable", player.getName()));
-        }
+        player.setFoodLevel(20);
+        player.setSaturation(20);
+        player.sendMessage(plugin.getMessages().get(player, "own-feed"));
+        sender.sendMessage(plugin.getMessages().get("other-feed", player.getName()));
         return true;
     }
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
-        if (args.length == 1 && sender.hasPermission("utilities.fly.others")) {
+        if (args.length == 1 && sender.hasPermission("utilities.feed.others")) {
             return Bukkit.getOnlinePlayers().stream()
                     .map(HumanEntity::getName)
                     .filter(s -> s.toLowerCase().startsWith(args[0].toLowerCase()))
@@ -52,5 +51,4 @@ public record FlyCommand(UtilitiesPlugin plugin) implements TabExecutor {
         }
         return new ArrayList<>();
     }
-
 }

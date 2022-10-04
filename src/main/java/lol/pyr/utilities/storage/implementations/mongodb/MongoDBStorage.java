@@ -1,13 +1,12 @@
-package lol.pyr.utilities.storage.implementations;
+package lol.pyr.utilities.storage.implementations.mongodb;
 
 import lol.pyr.utilities.UtilitiesPlugin;
-import lol.pyr.utilities.storage.UtilitiesStorageProvider;
-import lol.pyr.utilities.storage.UtilitiesUser;
+import lol.pyr.utilities.storage.StorageImplementationProvider;
+import lol.pyr.utilities.storage.model.User;
 
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 
-public class MongoDBStorage implements UtilitiesStorageProvider {
+public class MongoDBStorage implements StorageImplementationProvider {
 
     // TODO: MongoDB storage
 
@@ -18,12 +17,12 @@ public class MongoDBStorage implements UtilitiesStorageProvider {
     }
 
     @Override
-    public CompletableFuture<UtilitiesUser> getUser(UUID uuid) {
+    public User loadUser(UUID uuid) {
         throw new RuntimeException("Not implemented");
     }
 
     @Override
-    public void updateUser(UtilitiesUser user) {
+    public void saveUser(User user) {
         throw new RuntimeException("Not implemented");
     }
 

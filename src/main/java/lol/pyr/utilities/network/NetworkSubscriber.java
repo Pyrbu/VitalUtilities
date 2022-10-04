@@ -65,9 +65,20 @@ public class NetworkSubscriber extends JedisPubSub implements Runnable {
             for (Player player : Bukkit.getOnlinePlayers()) player.sendMessage(papi(player, msg));
         }
 
-        else if (split[0].equalsIgnoreCase("broadcastpermission")) {
+        else if (split[0].equalsIgnoreCase("permissionbroadcast")) {
             String msg = HexColorUtil.translateFully(String.join(";", Arrays.copyOfRange(split, 2, split.length)));
             for (Player player : Bukkit.getOnlinePlayers()) if (player.hasPermission(split[1])) player.sendMessage(papi(player, msg));
+        }
+
+        else if (split[0].equalsIgnoreCase("staffnotification")) {
+            String username = split[1];
+            String msg = String.join(";", Arrays.copyOfRange(split, 2, split.length));
+            for (Player p : Bukkit.getOnlinePlayers()) {
+                if (!p.hasPermission("utilities.staffnotifications") || p.getName().equalsIgnoreCase(username)) continue;
+                plugin.getStorage().getUser(p.getUniqueId()).thenAcceptAsync((user) -> {
+                    if (user.isStaffNotificationsEnabled()) p.sendMessage(msg);
+                });
+            }
         }
     }
 
