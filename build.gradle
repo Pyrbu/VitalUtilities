@@ -20,11 +20,13 @@ dependencies {
     implementation "org.bstats:bstats-bukkit:3.0.0"
     implementation "redis.clients:jedis:4.2.3"
 }
-group "me.pyr"
+group "lol.pyr"
 version "1.0.0"
 
 shadowJar {
     archiveClassifier.set ""
+    relocate "org.bstats", "lol.pyr.utilities.lib.bstats"
+    relocate "redis.clients.jedis", "lol.pyr.utilities.lib.jedis"
 }
 
 processResources {
