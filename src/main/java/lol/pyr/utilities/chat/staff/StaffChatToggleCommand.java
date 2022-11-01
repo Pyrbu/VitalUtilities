@@ -1,4 +1,4 @@
-package lol.pyr.utilities.features.commandspy;
+package lol.pyr.utilities.chat.staff;
 
 import lol.pyr.utilities.UtilitiesPlugin;
 import org.bukkit.command.Command;
@@ -6,8 +6,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public record CommandSpyCommand(UtilitiesPlugin plugin) implements CommandExecutor {
-
+public record StaffChatToggleCommand(UtilitiesPlugin plugin) implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player player)) {
@@ -15,11 +14,10 @@ public record CommandSpyCommand(UtilitiesPlugin plugin) implements CommandExecut
             return true;
         }
         plugin.runAsync(() -> plugin.getStorage().getUser(player.getUniqueId()).thenAccept((user) -> {
-            user.setCommandSpyEnabled(!user.isCommandSpyEnabled());
-            if (user.isCommandSpyEnabled()) sender.sendMessage(plugin.getMessages().get(player, "command-spy-enabled"));
-            else sender.sendMessage(plugin.getMessages().get(player, "command-spy-disabled"));
+            user.setStaffChatToggled(!user.isStaffChatToggled());
+            if (user.isStaffChatToggled()) sender.sendMessage(plugin.getMessages().get(player, "staffchat-enabled"));
+            else sender.sendMessage(plugin.getMessages().get(player, "staffchat-disabled"));
         }));
         return true;
     }
-
 }

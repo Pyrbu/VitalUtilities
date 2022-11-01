@@ -1,4 +1,4 @@
-package lol.pyr.utilities.features.misccommands;
+package lol.pyr.utilities.commands.teleport;
 
 import lol.pyr.utilities.UtilitiesPlugin;
 import org.bukkit.Bukkit;
@@ -24,6 +24,7 @@ public record TpallCommand(UtilitiesPlugin plugin) implements TabExecutor {
         TpallType type = TpallType.ALL;
         Float radius = null;
         World world = player.getWorld();
+        String permission = "";
         if (args.length > 0) {
             if (args[0].equalsIgnoreCase("world")) {
                 type = TpallType.WORLD;
@@ -48,6 +49,14 @@ public record TpallCommand(UtilitiesPlugin plugin) implements TabExecutor {
                     return true;
                 }
             }
+            else if (args[0].equalsIgnoreCase("permission")) {
+                if (args.length != 2) {
+                    sender.sendMessage(plugin.getMessages().get(player, "incorrect-usage", label + " permission <permission>"));
+                    return true;
+                }
+                type = TpallType.PERMISSION;
+                permission = args[1];
+            }
         }
         int count = 0;
         switch (type) {
@@ -70,6 +79,13 @@ public record TpallCommand(UtilitiesPlugin plugin) implements TabExecutor {
                         count++;
                     }
             }
+            case PERMISSION -> {
+                for (Player p : Bukkit.getOnlinePlayers())
+                    if (p != player && p.hasPermission(permission)) {
+                        p.teleport(player);
+                        count++;
+                    }
+            }
         }
         sender.sendMessage(plugin.getMessages().get(player, "tpall", "" + count));
         return true;
@@ -78,7 +94,7 @@ public record TpallCommand(UtilitiesPlugin plugin) implements TabExecutor {
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
         if (args.length == 1) {
-            return Stream.of("all", "radius", "world", "help")
+            return Stream.of("all", "radius", "world", "permission")
                     .filter(s -> s.startsWith(args[0].toLowerCase()))
                     .collect(Collectors.toList());
         }
@@ -92,6 +108,6 @@ public record TpallCommand(UtilitiesPlugin plugin) implements TabExecutor {
     }
 
     private enum TpallType {
-        ALL, WORLD, RADIUS
+        ALL, WORLD, RADIUS, PERMISSION
     }
 }

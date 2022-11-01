@@ -33,15 +33,18 @@ broadcast: "&6Broadcast &7» &e{0}"
 network-broadcast: "&6Network Broadcast &7» &e{0}"
 
 # {0}: The player's username
-# {1}: The server the player is joining
-notifications-staff-join: "&2[&aSTAFF&2] &a{0} has joined {1}"
+# {1}: The message sent by the player
+staff-chat: "&9[S] &3{0} &7» &b{1}"
 
 # {0}: The player's username
-# {1}: The gamemode the player was switched to
-notifications-staff-gamemode: "&2[&aSTAFF&2] &a{0} has switched their gamemode to {1}"
+# {1}: The server the player is joining
+notifications-staff-join: "&9[S] &3{0} &bhas joined &3{1}"
 
 notifications-enabled: "{P}Staff notifications have been &6enabled"
 notifications-disabled: "{P}Staff notifications have been &6disabled"
+
+staffchat-enabled: "{P}Staffchat has been &6enabled"
+staffchat-disabled: "{P}Staffchat has been &6disabled"
 
 # {0}: The player's username
 other-heal: "{P}You have healed &6{0}"
@@ -65,5 +68,10 @@ sudo-command: "{P}Forcing &6{0} &eto execute &6{1}"
 
 # {0}: The amount of players
 tpall: "{P}Teleported &6{0} players &eto your location"
+
+# {0}: Where the player was teleported to
+teleported-self: "{P}Teleported you to &6{0}"
+teleported-to-self: "{P}Teleported &6{0} &eto you"
+teleported-other: "{P}Teleported &6{0} &eto &6{1}"
 
 no-world-exists: "{P}No world with the name &6{0} &eexists"

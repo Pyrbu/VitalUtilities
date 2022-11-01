@@ -9,6 +9,7 @@ public class User {
 
     private final UUID uuid;
     private boolean commandSpyEnabled;
+    private boolean staffChatToggled;
     private boolean staffNotificationsEnabled;
 
     public User(UUID uuid) {

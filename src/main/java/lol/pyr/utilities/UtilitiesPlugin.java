@@ -1,13 +1,18 @@
 package lol.pyr.utilities;
 
-import lol.pyr.utilities.features.misccommands.*;
-import lol.pyr.utilities.features.commandspy.CommandSpyCommand;
-import lol.pyr.utilities.features.commandspy.CommandSpyListener;
+import lol.pyr.utilities.chat.BroadcastCommand;
+import lol.pyr.utilities.chat.NetworkBroadcastCommand;
+import lol.pyr.utilities.chat.staff.*;
+import lol.pyr.utilities.commands.gamemode.GamemodeCommand;
+import lol.pyr.utilities.commands.gamemode.GamemodeShortcutCommand;
+import lol.pyr.utilities.commands.player.*;
+import lol.pyr.utilities.commands.teleport.TpallCommand;
+import lol.pyr.utilities.chat.commandspy.CommandSpyCommand;
+import lol.pyr.utilities.chat.commandspy.CommandSpyListener;
+import lol.pyr.utilities.commands.teleport.TphereCommand;
 import lol.pyr.utilities.configuration.UtilitiesConfiguration;
 import lol.pyr.utilities.configuration.UtilitiesMessages;
 import lol.pyr.utilities.network.NetworkMessenger;
-import lol.pyr.utilities.features.staffnotifications.StaffNotificationListener;
-import lol.pyr.utilities.features.staffnotifications.StaffNotificationToggleCommand;
 import lol.pyr.utilities.storage.StorageCacheLayer;
 import lombok.Getter;
 import org.bstats.bukkit.Metrics;
@@ -100,6 +105,7 @@ public class UtilitiesPlugin extends JavaPlugin {
         PluginManager pm = Bukkit.getPluginManager();
         pm.registerEvents(new CommandSpyListener(this), this);
         pm.registerEvents(new StaffNotificationListener(this), this);
+        pm.registerEvents(new StaffChatListener(this), this);
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -118,8 +124,11 @@ public class UtilitiesPlugin extends JavaPlugin {
         getCommand("heal").setExecutor(new HealCommand(this));
         getCommand("feed").setExecutor(new FeedCommand(this));
         getCommand("tpall").setExecutor(new TpallCommand(this));
+        getCommand("tphere").setExecutor(new TphereCommand(this));
         getCommand("fly").setExecutor(new FlyCommand(this));
         getCommand("sudo").setExecutor(new SudoCommand(this));
+        getCommand("staffchat").setExecutor(new StaffChatCommand(this));
+        getCommand("togglestaffchat").setExecutor(new StaffChatToggleCommand(this));
     }
 
     public void runSync(Runnable runnable) {

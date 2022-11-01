@@ -1,4 +1,4 @@
-package lol.pyr.utilities.features.misccommands;
+package lol.pyr.utilities.commands.player;
 
 import lol.pyr.utilities.UtilitiesPlugin;
 import org.bukkit.Bukkit;
@@ -12,38 +12,34 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public record FeedCommand(UtilitiesPlugin plugin) implements TabExecutor {
+public record ClearInventoryCommand(UtilitiesPlugin plugin) implements TabExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!sender.hasPermission("utilities.feed.others") || args.length == 0) {
+        if (args.length == 0) {
             if (!(sender instanceof Player player)) {
                 sender.sendMessage(plugin.getMessages().get("only-player-command"));
                 return true;
             }
+            player.getInventory().clear();
+            player.sendMessage(plugin.getMessages().get(player, "own-inventory-cleared"));
+        } else {
+            Player player = Bukkit.getPlayer(args[0]);
+            if (player == null) {
+                sender.sendMessage(plugin.getMessages().get("player-not-online", args[0]));
+                return true;
+            }
 
-            player.setFoodLevel(20);
-            player.setSaturation(20);
-            player.sendMessage(plugin.getMessages().get(player, "own-feed"));
-            return true;
+            player.getInventory().clear();
+            player.sendMessage(plugin.getMessages().get(player, "own-inventory-cleared"));
+            sender.sendMessage(plugin.getMessages().get("other-inventory-cleared", player.getName()));
         }
-
-        Player player = Bukkit.getPlayer(args[0]);
-        if (player == null) {
-            sender.sendMessage(plugin.getMessages().get("player-not-online", args[0]));
-            return true;
-        }
-
-        player.setFoodLevel(20);
-        player.setSaturation(20);
-        player.sendMessage(plugin.getMessages().get(player, "own-feed"));
-        sender.sendMessage(plugin.getMessages().get("other-feed", player.getName()));
         return true;
     }
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
-        if (args.length == 1 && sender.hasPermission("utilities.feed.others")) {
+        if (args.length == 1 && sender.hasPermission("utilities.clearinventory.others")) {
             return Bukkit.getOnlinePlayers().stream()
                     .map(HumanEntity::getName)
                     .filter(s -> s.toLowerCase().startsWith(args[0].toLowerCase()))
@@ -51,4 +47,5 @@ public record FeedCommand(UtilitiesPlugin plugin) implements TabExecutor {
         }
         return new ArrayList<>();
     }
+
 }

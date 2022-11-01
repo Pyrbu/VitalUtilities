@@ -83,6 +83,21 @@ commands:
     permission: utilities.tpall
     permission-message: "You don't have the required permission to use this command"
 
+  tphere:
+    aliases: [tph]
+    permission: utilities.tphere
+    permission-message: "You don't have the required permission to use this command"
+
+  staffchat:
+    aliases: [sc]
+    permission: utilities.staffchat
+    permission-message: "You don't have the required permission to use this command"
+
+  togglestaffchat:
+    aliases: [tsc]
+    permission: utilities.staffchat
+    permission-message: "You don't have the required permission to use this command"
+
 permissions:
   utilites.clearinventory.others:
     description: "Allows players to clear other player's inventories with the /clearinventory command"

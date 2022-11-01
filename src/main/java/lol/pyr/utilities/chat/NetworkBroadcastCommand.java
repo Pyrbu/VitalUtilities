@@ -1,4 +1,4 @@
-package lol.pyr.utilities.features.misccommands;
+package lol.pyr.utilities.chat;
 
 import lol.pyr.utilities.UtilitiesPlugin;
 import lol.pyr.utilities.util.HexColorUtil;

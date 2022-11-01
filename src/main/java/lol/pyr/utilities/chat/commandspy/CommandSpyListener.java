@@ -1,4 +1,4 @@
-package lol.pyr.utilities.features.commandspy;
+package lol.pyr.utilities.chat.commandspy;
 
 import lol.pyr.utilities.UtilitiesPlugin;
 import lombok.val;

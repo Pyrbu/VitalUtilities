@@ -30,6 +30,7 @@ public class YamlStorage implements StorageImplementationProvider, Listener {
 
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
         user.setCommandSpyEnabled(config.getBoolean("command-spy-enabled", false));
+        user.setStaffChatToggled(config.getBoolean("staff-chat-toggled"));
         user.setStaffNotificationsEnabled(config.getBoolean("staff-notifications-enabled", true));
         return user;
     }
@@ -50,6 +51,7 @@ public class YamlStorage implements StorageImplementationProvider, Listener {
 
         YamlConfiguration config = new YamlConfiguration();
         config.set("command-spy-enabled", user.isCommandSpyEnabled());
+        config.set("staff-chat-toggled", user.isStaffChatToggled());
         config.set("staff-notifications-enabled", user.isStaffNotificationsEnabled());
 
         try {

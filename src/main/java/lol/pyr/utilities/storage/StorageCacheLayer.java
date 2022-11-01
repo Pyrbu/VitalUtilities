@@ -18,13 +18,11 @@ import java.util.HashSet;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
-@SuppressWarnings("BusyWait")
 public class StorageCacheLayer implements Listener {
 
     private final UtilitiesPlugin plugin;
     private StorageImplementationProvider implementation;
     private final HashMap<UUID, User> userMap = new HashMap<>();
-    private boolean lock = false;
 
     public StorageCacheLayer(UtilitiesPlugin plugin, StorageType type) {
         this.plugin = plugin;
@@ -40,20 +38,16 @@ public class StorageCacheLayer implements Listener {
         if (userMap.containsKey(uuid)) future.complete(userMap.get(uuid));
         else {
             plugin.runAsync(() -> {
-                while (lock) {
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException ignored) {}
-                }
-
                 User user = implementation.loadUser(uuid);
-                lock = true;
                 userMap.put(uuid, user);
-                lock = false;
                 future.complete(user);
             });
         }
         return future;
+    }
+
+    public User getUserSync(UUID uuid) {
+        return userMap.computeIfAbsent(uuid, u -> implementation.loadUser(u));
     }
 
     public void saveUser(UUID uuid) {
@@ -65,7 +59,6 @@ public class StorageCacheLayer implements Listener {
     }
 
     public void shutdown() {
-        lock = true;
         HandlerList.unregisterAll(this);
         saveAll();
     }

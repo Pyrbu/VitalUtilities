@@ -1,4 +1,4 @@
-package lol.pyr.utilities.features.misccommands;
+package lol.pyr.utilities.commands.gamemode;
 
 import lol.pyr.utilities.UtilitiesPlugin;
 import lombok.val;
