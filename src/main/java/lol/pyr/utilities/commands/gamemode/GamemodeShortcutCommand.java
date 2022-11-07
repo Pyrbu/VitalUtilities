@@ -1,55 +1,28 @@
 package lol.pyr.utilities.commands.gamemode;
 
+import lol.pyr.extendedcommands.CommandContext;
+import lol.pyr.extendedcommands.api.ExtendedExecutor;
+import lol.pyr.extendedcommands.exception.CommandExecutionException;
+import lol.pyr.extendedcommands.util.CompletionUtil;
 import lol.pyr.utilities.UtilitiesPlugin;
-import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabExecutor;
-import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
-public record GamemodeShortcutCommand(UtilitiesPlugin plugin, GameMode gameMode) implements TabExecutor {
+public record GamemodeShortcutCommand(GameMode gameMode) implements ExtendedExecutor<UtilitiesPlugin> {
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!sender.hasPermission("utilities.gamemode.others") || args.length == 0) {
-            if (!(sender instanceof Player player)) {
-                sender.sendMessage(plugin.getMessages().get("only-player-command"));
-                return true;
-            }
-
-            player.setGameMode(gameMode);
-            player.sendMessage(plugin.getMessages().get(player, "own-gamemode-set", gameMode.toString()));
-            return true;
-        }
-
-        Player player = Bukkit.getPlayer(args[0]);
-        if (player == null) {
-            sender.sendMessage(plugin.getMessages().get("player-not-online", args[0]));
-            return true;
-        }
-
+    public void run(CommandContext<UtilitiesPlugin> context) throws CommandExecutionException {
+        Player player = context.parseTargetOrSelf("utilities.gamemode.others");
         player.setGameMode(gameMode);
-        player.sendMessage(plugin.getMessages().get(player, "own-gamemode-set", gameMode.toString()));
-        sender.sendMessage(plugin.getMessages().get("other-gamemode-set", player.getName(), gameMode.toString()));
-
-        return true;
+        player.sendMessage(context.getPlugin().getMessages().get(player, "own-gamemode-set", gameMode.toString()));
+        if (!context.getSender().equals(player)) context.getSender().sendMessage(context.getPlugin().getMessages().get("other-gamemode-set", player.getName(), gameMode.toString()));
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
-        if (args.length == 1 && sender.hasPermission("utilities.gamemode.others")) {
-            return Bukkit.getOnlinePlayers().stream()
-                    .map(HumanEntity::getName)
-                    .filter(s -> s.toLowerCase().startsWith(args[0].toLowerCase()))
-                    .collect(Collectors.toList());
-        }
-        return new ArrayList<>();
+    public List<String> complete(CommandContext<UtilitiesPlugin> context) throws CommandExecutionException {
+        if (context.hasPermission("utilities.gamemode.others") && context.argSize() == 1) return CompletionUtil.players(context.popString());
+        return List.of();
     }
-
 }

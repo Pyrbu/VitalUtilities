@@ -1,7 +1,7 @@
 plugins {
-    id 'java'
+    id "java"
     id "io.freefair.lombok" version "6.5.1"
-    id 'com.github.johnrengelman.shadow' version '7.1.2'
+    id "com.github.johnrengelman.shadow" version "7.1.2"
 }
 
 repositories {
@@ -12,6 +12,9 @@ repositories {
     maven {
         url "https://repo.extendedclip.com/content/repositories/placeholderapi/"
     }
+    maven {
+        url "https://repo.pyr.lol/releases/"
+    }
 }
 
 dependencies {
@@ -20,7 +23,9 @@ dependencies {
     implementation "org.bstats:bstats-bukkit:3.0.0"
     //noinspection GradlePackageUpdate
     implementation "redis.clients:jedis:3.5.2"
+    implementation "lol.pyr:extendedcommands:1.1.0"
 }
+
 group "lol.pyr"
 version "1.0.0"
 
@@ -28,6 +33,9 @@ shadowJar {
     archiveClassifier.set ""
     relocate "org.bstats", "lol.pyr.utilities.lib.bstats"
     relocate "redis.clients.jedis", "lol.pyr.utilities.lib.jedis"
+    relocate "lol.pyr.extendedcommands", "lol.pyr.utilities.lib.command"
+    relocate "org.slf4j", "lol.pyr.utilities.lib.slf4j"
+    minimize()
 }
 
 processResources {

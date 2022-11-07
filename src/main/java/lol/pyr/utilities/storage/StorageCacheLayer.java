@@ -12,6 +12,7 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -23,6 +24,7 @@ public class StorageCacheLayer implements Listener {
     private final UtilitiesPlugin plugin;
     private StorageImplementationProvider implementation;
     private final HashMap<UUID, User> userMap = new HashMap<>();
+    private final BukkitTask autosaveTask;
 
     public StorageCacheLayer(UtilitiesPlugin plugin, StorageType type) {
         this.plugin = plugin;
@@ -31,6 +33,7 @@ public class StorageCacheLayer implements Listener {
             case MONGODB -> implementation = new MongoDBStorage(plugin);
         }
         Bukkit.getPluginManager().registerEvents(this, plugin);
+        autosaveTask = new CacheAutosaveTask().runTask(plugin);
     }
 
     public CompletableFuture<User> getUser(UUID uuid) {
@@ -60,7 +63,9 @@ public class StorageCacheLayer implements Listener {
 
     public void shutdown() {
         HandlerList.unregisterAll(this);
-        saveAll();
+        autosaveTask.cancel();
+        for (UUID uuid : userMap.keySet()) implementation.saveUser(userMap.get(uuid));
+        implementation.shutdown();
     }
 
     @EventHandler
@@ -72,6 +77,7 @@ public class StorageCacheLayer implements Listener {
         @Override
         public void run() {
             saveAll();
+
             for (UUID uuid : new HashSet<>(userMap.keySet())) {
                 Player player = Bukkit.getPlayer(uuid);
                 if (player == null || !player.isOnline()) {

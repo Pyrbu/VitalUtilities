@@ -1,54 +1,30 @@
 package lol.pyr.utilities.commands.player;
 
+import lol.pyr.extendedcommands.CommandContext;
+import lol.pyr.extendedcommands.api.ExtendedExecutor;
+import lol.pyr.extendedcommands.exception.CommandExecutionException;
+import lol.pyr.extendedcommands.util.CompletionUtil;
 import lol.pyr.utilities.UtilitiesPlugin;
-import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabExecutor;
-import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
-public record HealCommand(UtilitiesPlugin plugin) implements TabExecutor {
+public class HealCommand implements ExtendedExecutor<UtilitiesPlugin> {
 
     @Override
     @SuppressWarnings("ConstantConditions")
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!sender.hasPermission("utilities.heal.others") || args.length == 0) {
-            if (!(sender instanceof Player player)) {
-                sender.sendMessage(plugin.getMessages().get("only-player-command"));
-                return true;
-            }
-
-            player.setHealth(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
-            player.sendMessage(plugin.getMessages().get(player, "own-heal"));
-            return true;
-        }
-
-        Player player = Bukkit.getPlayer(args[0]);
-        if (player == null) {
-            sender.sendMessage(plugin.getMessages().get("player-not-online", args[0]));
-            return true;
-        }
-
+    public void run(CommandContext<UtilitiesPlugin> context) throws CommandExecutionException {
+        context.setCurrentUsage(context.getLabel() + (context.hasPermission("utilities.heal.others") ? " <player>" : ""));
+        Player player = context.parseTargetOrSelf("utilities.heal.others");
         player.setHealth(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
-        player.sendMessage(plugin.getMessages().get(player, "own-heal"));
-        sender.sendMessage(plugin.getMessages().get("other-heal", player.getName()));
-        return true;
+        player.sendMessage(context.getPlugin().getMessages().get(player, "own-heal"));
+        if (!context.getSender().equals(player)) context.getSender().sendMessage(context.getPlugin().getMessages().get("other-heal", player.getName()));
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
-        if (args.length == 1 && sender.hasPermission("utilities.heal.others")) {
-            return Bukkit.getOnlinePlayers().stream()
-                    .map(HumanEntity::getName)
-                    .filter(s -> s.toLowerCase().startsWith(args[0].toLowerCase()))
-                    .collect(Collectors.toList());
-        }
-        return new ArrayList<>();
+    public List<String> complete(CommandContext<UtilitiesPlugin> context) throws CommandExecutionException {
+        if (context.argSize() == 1 && context.hasPermission("utilities.heal.others")) return CompletionUtil.players(context.popString());
+        return List.of();
     }
 }

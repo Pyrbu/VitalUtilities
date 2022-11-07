@@ -63,8 +63,7 @@ other-fly-disable: "{P}Set fly mode to &6disabled &efor &6{0}"
 
 # {0}: The player being sudoed's username
 # {1}: The command being sudoed
-sudo-chat: "{P}Forcing &6{0} &eto say &6{1}"
-sudo-command: "{P}Forcing &6{0} &eto execute &6{1}"
+sudo: "{P}Forcing &6{0} &eto execute &6{1}"
 
 # {0}: The amount of players
 tpall: "{P}Teleported &6{0} players &eto your location"

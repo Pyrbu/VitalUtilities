@@ -4,22 +4,6 @@
 # Planned: MongoDB, MySQL, MariaDB
 storage-type: YAML
 
-# Aliases for gamemode names for the /gamemode command
-gamemode-aliases:
-  survival:
-    - "s"
-    - "0"
-  creative:
-    - "c"
-    - "1"
-  adventure:
-    - "a"
-    - "2"
-  spectator:
-    - "sp"
-    - "3"
-
-
 # Should network features be enabled?
 enable-network-features: false
 

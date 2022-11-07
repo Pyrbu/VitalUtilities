@@ -1,44 +1,30 @@
 package lol.pyr.utilities.commands.player;
 
+import lol.pyr.extendedcommands.CommandContext;
+import lol.pyr.extendedcommands.api.ExtendedExecutor;
+import lol.pyr.extendedcommands.exception.CommandExecutionException;
+import lol.pyr.extendedcommands.util.CompletionUtil;
 import lol.pyr.utilities.UtilitiesPlugin;
-import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 
-import java.util.Arrays;
 import java.util.List;
 
-public record SudoCommand(UtilitiesPlugin plugin) implements TabExecutor {
+public class SudoCommand implements ExtendedExecutor<UtilitiesPlugin> {
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (args.length < 2) {
-            sender.sendMessage(plugin.getMessages().get("incorrect-usage", label + " <player> <command>"));
-            return true;
-        }
-
-        Player player = Bukkit.getPlayer(args[0]);
-        if (player == null) {
-            sender.sendMessage(plugin.getMessages().get("player-not-online", args[0]));
-            return true;
-        }
-
-        String cmd = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
-        if (cmd.toLowerCase().startsWith("c:")) {
-            player.chat(cmd);
-            sender.sendMessage(plugin.getMessages().get("sudo-chat", player.getName(), cmd));
-        } else {
-            player.performCommand(cmd);
-            sender.sendMessage(plugin.getMessages().get("sudo-command", player.getName(), cmd));
-        }
-        return true;
+    public void run(CommandContext<UtilitiesPlugin> context) throws CommandExecutionException {
+        context.setCurrentUsage(context.getLabel() + " <player> <command>");
+        Player player = context.parse(Player.class);
+        context.ensureArgsNotEmpty();
+        String cmd = context.dumpAllArgs();
+        if (cmd.toLowerCase().startsWith("c:")) player.chat(cmd.substring(2));
+        else player.performCommand(cmd);
+        context.getPlugin().getMessages().get("sudo", player.getName(), cmd);
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
-        return null;
+    public List<String> complete(CommandContext<UtilitiesPlugin> context) throws CommandExecutionException {
+        if (context.argSize() == 1) return CompletionUtil.players(context.popString());
+        return List.of();
     }
-
 }

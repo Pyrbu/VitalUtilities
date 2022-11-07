@@ -1,43 +1,28 @@
 package lol.pyr.utilities.commands.teleport;
 
+import lol.pyr.extendedcommands.CommandContext;
+import lol.pyr.extendedcommands.api.ExtendedExecutor;
+import lol.pyr.extendedcommands.exception.CommandExecutionException;
+import lol.pyr.extendedcommands.util.CompletionUtil;
 import lol.pyr.utilities.UtilitiesPlugin;
-import lol.pyr.utilities.util.CompletionUtil;
-import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public record TphereCommand(UtilitiesPlugin plugin) implements TabExecutor {
+public class TphereCommand implements ExtendedExecutor<UtilitiesPlugin> {
+
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!(sender instanceof Player player)) {
-            sender.sendMessage(plugin.getMessages().get("only-player-command"));
-            return true;
-        }
-
-        if (args.length != 1) {
-            sender.sendMessage(plugin.getMessages().get(player, "incorrect-usage", label + " <player>"));
-            return true;
-        }
-
-        Player p1 = Bukkit.getPlayer(args[0]);
-        if (p1 == null) {
-            player.sendMessage(plugin.getMessages().get(player, "player-not-online", args[0]));
-            return true;
-        }
-        p1.teleport(player.getLocation());
-        p1.sendMessage(plugin.getMessages().get(p1, "teleported-self", player.getName()));
-        player.sendMessage(plugin.getMessages().get(player, "teleported-to-self", p1.getName()));
-        return true;
+    public void run(CommandContext<UtilitiesPlugin> context) throws CommandExecutionException {
+        Player sender = context.ensureSenderIsPlayer();
+        Player target = context.parse(Player.class);
+        target.teleport(sender.getLocation());
+        target.sendMessage(context.getPlugin().getMessages().get(target, "teleported-self", sender.getName()));
+        sender.sendMessage(context.getPlugin().getMessages().get(sender, "teleported-to-self", target.getName()));
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
-        if (args.length == 1) return CompletionUtil.players(args[0]);
-        return new ArrayList<>();
+    public List<String> complete(CommandContext<UtilitiesPlugin> context) throws CommandExecutionException {
+        if (context.argSize() == 1) return CompletionUtil.players(context.popString());
+        return List.of();
     }
 }

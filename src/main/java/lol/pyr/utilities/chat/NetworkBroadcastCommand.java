@@ -1,25 +1,23 @@
 package lol.pyr.utilities.chat;
 
+import lol.pyr.extendedcommands.CommandContext;
+import lol.pyr.extendedcommands.api.ExtendedExecutor;
+import lol.pyr.extendedcommands.exception.CommandExecutionException;
 import lol.pyr.utilities.UtilitiesPlugin;
 import lol.pyr.utilities.util.HexColorUtil;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
 
-public record NetworkBroadcastCommand(UtilitiesPlugin plugin) implements CommandExecutor {
+
+public class NetworkBroadcastCommand implements ExtendedExecutor<UtilitiesPlugin> {
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!plugin.getUtilitiesConfig().isEnableNetworkFeatures()) {
-            sender.sendMessage(plugin.getMessages().get("no-network-features"));
-            return true;
+    public void run(CommandContext<UtilitiesPlugin> context) throws CommandExecutionException {
+        if (!context.getPlugin().getUtilitiesConfig().isEnableNetworkFeatures()) {
+            context.getSender().sendMessage(context.getPlugin().getMessages().get("no-network-features"));
+            return;
         }
-        if (args.length == 0) {
-            sender.sendMessage(plugin.getMessages().get("incorrect-usage", label + " <message>"));
-            return true;
-        }
-        plugin.getNetworkConnection().broadcastMessage(plugin.getMessages().get("network-broadcast", HexColorUtil.translateFully(String.join(" ", args))));
-        return true;
+        context.setCurrentUsage(context.getLabel() + " <message>");
+        context.ensureArgsNotEmpty();
+        context.getPlugin().getNetworkConnection().broadcastMessage(context.getPlugin().getMessages().get("network-broadcast", HexColorUtil.translateFully(context.dumpAllArgs())));
     }
 
 }
