@@ -20,10 +20,13 @@ repositories {
 dependencies {
     compileOnly "org.spigotmc:spigot-api:1.19.2-R0.1-SNAPSHOT"
     compileOnly "me.clip:placeholderapi:2.11.1"
+
     implementation "org.bstats:bstats-bukkit:3.0.0"
+    implementation "org.mongodb:mongo-java-driver:3.12.11"
+    implementation "lol.pyr:extendedcommands:1.1.0"
+
     //noinspection GradlePackageUpdate
     implementation "redis.clients:jedis:3.5.2"
-    implementation "lol.pyr:extendedcommands:1.1.0"
 }
 
 group "lol.pyr"
@@ -35,6 +38,7 @@ shadowJar {
     relocate "redis.clients.jedis", "lol.pyr.utilities.lib.jedis"
     relocate "lol.pyr.extendedcommands", "lol.pyr.utilities.lib.command"
     relocate "org.slf4j", "lol.pyr.utilities.lib.slf4j"
+    relocate "org.mongodb", "lol.pyr.utilities.lib.mongodb"
     minimize()
 }
 

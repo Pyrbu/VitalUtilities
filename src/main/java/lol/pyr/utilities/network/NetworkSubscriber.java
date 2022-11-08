@@ -1,7 +1,7 @@
 package lol.pyr.utilities.network;
 
 import lol.pyr.utilities.UtilitiesPlugin;
-import lol.pyr.utilities.util.HexColorUtil;
+import lol.pyr.utilities.util.ColorUtil;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -60,13 +60,13 @@ public class NetworkSubscriber extends JedisPubSub implements Runnable {
         String[] split = message.split(";");
 
         if (split[0].equalsIgnoreCase("broadcast")) {
-            String msg = HexColorUtil.translateFully(String.join(";", Arrays.copyOfRange(split, 1, split.length)));
+            String msg = ColorUtil.translateFully(String.join(";", Arrays.copyOfRange(split, 1, split.length)));
             Bukkit.getServer().getLogger().info("[Network] " + msg);
             for (Player player : Bukkit.getOnlinePlayers()) player.sendMessage(papi(player, msg));
         }
 
         else if (split[0].equalsIgnoreCase("permissionbroadcast")) {
-            String msg = HexColorUtil.translateFully(String.join(";", Arrays.copyOfRange(split, 2, split.length)));
+            String msg = ColorUtil.translateFully(String.join(";", Arrays.copyOfRange(split, 2, split.length)));
             for (Player player : Bukkit.getOnlinePlayers()) if (player.hasPermission(split[1])) player.sendMessage(papi(player, msg));
         }
 

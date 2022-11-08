@@ -2,7 +2,7 @@ package lol.pyr.utilities.chat.staff;
 
 import lol.pyr.utilities.UtilitiesPlugin;
 import lol.pyr.utilities.storage.model.User;
-import lol.pyr.utilities.util.HexColorUtil;
+import lol.pyr.utilities.util.ColorUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -17,7 +17,7 @@ public record StaffChatListener(UtilitiesPlugin plugin) implements Listener {
         User user = plugin.getStorage().getUserSync(event.getPlayer().getUniqueId());
         if (!user.isStaffChatToggled()) return;
         event.setCancelled(true);
-        sendMessage(plugin.getMessages().get("staff-chat", event.getPlayer().getName(), HexColorUtil.translateFully(event.getMessage())));
+        sendMessage(plugin.getMessages().get("staff-chat", event.getPlayer().getName(), ColorUtil.translateFully(event.getMessage())));
     }
 
     private void sendMessage(String message) {

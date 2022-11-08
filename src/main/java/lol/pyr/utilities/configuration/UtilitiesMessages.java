@@ -2,7 +2,7 @@ package lol.pyr.utilities.configuration;
 
 import com.google.common.base.Charsets;
 import lol.pyr.utilities.UtilitiesPlugin;
-import lol.pyr.utilities.util.HexColorUtil;
+import lol.pyr.utilities.util.ColorUtil;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -42,8 +42,8 @@ public class UtilitiesMessages {
         InputStream defaultConfigStream = plugin.getResource(FILENAME);
         if (defaultConfigStream != null) {
             YamlConfiguration defaults = YamlConfiguration.loadConfiguration(new InputStreamReader(defaultConfigStream, Charsets.UTF_8));
-            String prefix = HexColorUtil.translateFully(defaults.getString("prefix"));
-            for (String key : defaults.getKeys(false)) messages.put(key, HexColorUtil.translateFully(defaults.getString(key)).replace("{P}", prefix));
+            String prefix = ColorUtil.translateFully(defaults.getString("prefix"));
+            for (String key : defaults.getKeys(false)) messages.put(key, ColorUtil.translateFully(defaults.getString(key)).replace("{P}", prefix));
         }
     }
 
@@ -51,8 +51,8 @@ public class UtilitiesMessages {
         messages.clear();
         loadDefaults();
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
-        String prefix = HexColorUtil.translateFully(config.getString("prefix"));
-        for (String key : config.getKeys(false)) messages.put(key, HexColorUtil.translateFully(config.getString(key)).replace("{P}", prefix));
+        String prefix = ColorUtil.translateFully(config.getString("prefix"));
+        for (String key : config.getKeys(false)) messages.put(key, ColorUtil.translateFully(config.getString(key)).replace("{P}", prefix));
     }
 
     private String format(String id, String[] strings) {

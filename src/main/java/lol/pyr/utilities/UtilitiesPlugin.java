@@ -26,9 +26,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 @SuppressWarnings("unused")
 public class UtilitiesPlugin extends JavaPlugin {
-
-    private boolean enabled = false;
-
     @Getter private UtilitiesConfiguration utilitiesConfig;
     @Getter private UtilitiesMessages messages;
     @Getter private NetworkMessenger networkConnection;
@@ -47,53 +44,40 @@ public class UtilitiesPlugin extends JavaPlugin {
 
         utilitiesConfig = new UtilitiesConfiguration(this);
         messages = new UtilitiesMessages(this);
-        utilitiesConfig.registerReloadHook(() -> getLogger().info("Reloaded configuration"));
-        getLogger().info("Configurations loaded");
 
-        initialiseStorage();
         utilitiesConfig.registerReloadHook(() -> {
-            storage.shutdown();
-            initialiseStorage();
-            getLogger().info("Reloaded storage");
+            if (storage != null) storage.shutdown();
+            storage = new StorageCacheLayer(this, utilitiesConfig.getStorageType());
+            getLogger().info("Initialised Storage [" + utilitiesConfig.getStorageType().toString() + "]");
         });
-        getLogger().info("Initialised Storage [" + utilitiesConfig.getStorageType().toString() + "]");
 
-        if (utilitiesConfig.isEnableNetworkFeatures()) {
-            networkConnection = new NetworkMessenger(this);
-            getLogger().info("Initialised Network Features");
-        }
         utilitiesConfig.registerReloadHook(() -> {
-            if (networkConnection != null) {
-                networkConnection.shutdown();
-                if (!utilitiesConfig.isEnableNetworkFeatures()) {
-                    networkConnection = null;
-                    return;
-                }
+            if (networkConnection != null) networkConnection.shutdown();
+            if (!utilitiesConfig.isEnableNetworkFeatures()) {
+                networkConnection = null;
+                getLogger().info("Skipping Network Features");
+                return;
             }
             if (networkConnection == null) networkConnection = new NetworkMessenger(this);
             else networkConnection.connect();
-            getLogger().info("Reloaded network features");
+            getLogger().info("Initialised Network Features");
         });
+
+        utilitiesConfig.registerReloadHook(() -> getLogger().info("Configurations loaded"));
+        utilitiesConfig.reload();
 
         registerListeners();
         getLogger().info("Registered listeners");
 
         registerCommands();
         getLogger().info("Registered commands");
-
-        enabled = true;
     }
 
     @Override
     public void onDisable() {
-        if (!enabled) return;
-        storage.shutdown();
+        if (storage != null) storage.shutdown();
         if (networkConnection != null) networkConnection.shutdown();
         getLogger().info("Shutdown complete");
-    }
-
-    private void initialiseStorage() {
-        storage = new StorageCacheLayer(this, utilitiesConfig.getStorageType());
     }
 
     private void registerListeners() {
@@ -106,7 +90,9 @@ public class UtilitiesPlugin extends JavaPlugin {
     private void registerCommands() {
         CommandManager<UtilitiesPlugin> manager = new CommandManager<>(this);
         manager.registerDefaultParsers();
-        manager.setMessageResolver(MessageKey.NOT_ENOUGH_ARGS, (context) -> messages.get("incorrect-usage", context.getCurrentUsage()));
+        manager.setMessageResolver(MessageKey.NOT_ENOUGH_ARGS, context -> messages.get("incorrect-usage", context.getCurrentUsage()));
+        manager.setMessageResolver(MessageKey.SENDER_REQUIRED_PLAYER, context -> messages.get("player-only-command"));
+        manager.setDefaultResolver(context -> messages.get("incorrect-usage", context.getCurrentUsage()));
 
         manager.registerCommand("vitalutilities", new UtilitiesCommand());
         manager.registerCommand("commandspy", new CommandSpyCommand());

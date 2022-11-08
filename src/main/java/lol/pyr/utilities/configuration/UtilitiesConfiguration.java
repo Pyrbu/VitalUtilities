@@ -2,7 +2,7 @@ package lol.pyr.utilities.configuration;
 
 import com.google.common.base.Charsets;
 import lol.pyr.utilities.UtilitiesPlugin;
-import lol.pyr.utilities.storage.implementations.StorageType;
+import lol.pyr.utilities.storage.StorageType;
 import lombok.Getter;
 import org.bukkit.GameMode;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -37,6 +37,12 @@ public class UtilitiesConfiguration {
     @Getter private boolean enableNetworkFeatures;
     @Getter private String networkServerName;
 
+    @Getter private String mongoHostname;
+    @Getter private int mongoPort;
+    @Getter private String mongoUsername;
+    @Getter private String mongoPassword;
+    @Getter private String mongoDatabase;
+
     @SuppressWarnings({"ConstantConditions", "ResultOfMethodCallIgnored"})
     public UtilitiesConfiguration(UtilitiesPlugin plugin) {
         this.plugin = plugin;
@@ -48,7 +54,6 @@ public class UtilitiesConfiguration {
             plugin.getLogger().severe("Could not copy default messages.yml file!");
             exception.printStackTrace();
         }
-        reload();
     }
 
     private void loadDefaults(YamlConfiguration config) {
@@ -84,6 +89,12 @@ public class UtilitiesConfiguration {
 
         enableNetworkFeatures = config.getBoolean("enable-network-features");
         networkServerName = config.getString("server-name");
+
+        mongoHostname = config.getString("mongo.hostname");
+        mongoPort = config.getInt("mongo.port");
+        mongoUsername = config.getString("mongo.username");
+        mongoPassword = config.getString("mongo.password");
+        mongoDatabase = config.getString("mongo.database");
 
         for (Runnable hook : hooks) hook.run();
     }

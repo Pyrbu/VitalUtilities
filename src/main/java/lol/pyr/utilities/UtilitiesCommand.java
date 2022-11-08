@@ -12,7 +12,7 @@ public class UtilitiesCommand implements ExtendedExecutor<UtilitiesPlugin> {
 
     @Override
     public void run(CommandContext<UtilitiesPlugin> context) throws CommandExecutionException {
-        context.setCurrentUsage(context.getPlugin().getMessages().get("incorrect-usage", context.getLabel() + " help"));
+        context.setCurrentUsage(context.getLabel() + " help");
         String arg = context.popString();
 
         if (arg.equalsIgnoreCase("reload")) {

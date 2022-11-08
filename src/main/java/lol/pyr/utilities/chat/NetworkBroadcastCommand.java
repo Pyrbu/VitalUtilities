@@ -4,7 +4,7 @@ import lol.pyr.extendedcommands.CommandContext;
 import lol.pyr.extendedcommands.api.ExtendedExecutor;
 import lol.pyr.extendedcommands.exception.CommandExecutionException;
 import lol.pyr.utilities.UtilitiesPlugin;
-import lol.pyr.utilities.util.HexColorUtil;
+import lol.pyr.utilities.util.ColorUtil;
 
 
 public class NetworkBroadcastCommand implements ExtendedExecutor<UtilitiesPlugin> {
@@ -17,7 +17,7 @@ public class NetworkBroadcastCommand implements ExtendedExecutor<UtilitiesPlugin
         }
         context.setCurrentUsage(context.getLabel() + " <message>");
         context.ensureArgsNotEmpty();
-        context.getPlugin().getNetworkConnection().broadcastMessage(context.getPlugin().getMessages().get("network-broadcast", HexColorUtil.translateFully(context.dumpAllArgs())));
+        context.getPlugin().getNetworkConnection().broadcastMessage(context.getPlugin().getMessages().get("network-broadcast", ColorUtil.translateFully(context.dumpAllArgs())));
     }
 
 }

@@ -6,13 +6,8 @@ import java.util.UUID;
 
 @Data
 public class User {
-
     private final UUID uuid;
-    private boolean commandSpyEnabled;
-    private boolean staffChatToggled;
-    private boolean staffNotificationsEnabled;
-
-    public User(UUID uuid) {
-        this.uuid = uuid;
-    }
+    private boolean commandSpyEnabled = false;
+    private boolean staffChatToggled = false;
+    private boolean staffNotificationsEnabled = true;
 }

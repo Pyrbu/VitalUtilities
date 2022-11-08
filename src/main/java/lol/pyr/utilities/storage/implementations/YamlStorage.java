@@ -1,4 +1,4 @@
-package lol.pyr.utilities.storage.implementations.yaml;
+package lol.pyr.utilities.storage.implementations;
 
 import lol.pyr.utilities.UtilitiesPlugin;
 import lol.pyr.utilities.storage.StorageImplementationProvider;
@@ -8,9 +8,7 @@ import org.bukkit.event.Listener;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class YamlStorage implements StorageImplementationProvider, Listener {
 
@@ -25,8 +23,6 @@ public class YamlStorage implements StorageImplementationProvider, Listener {
         File file = new File(plugin.getDataFolder(), "users/" + uuid.toString() + ".yml");
         User user = new User(uuid);
         if (!file.exists()) return user;
-
-        // TODO: Reminder to always add user values here
 
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
         user.setCommandSpyEnabled(config.getBoolean("command-spy-enabled", false));
@@ -47,8 +43,6 @@ public class YamlStorage implements StorageImplementationProvider, Listener {
             exception.printStackTrace();
         }
 
-        // TODO: Reminder to always add user values here
-
         YamlConfiguration config = new YamlConfiguration();
         config.set("command-spy-enabled", user.isCommandSpyEnabled());
         config.set("staff-chat-toggled", user.isStaffChatToggled());
@@ -67,5 +61,4 @@ public class YamlStorage implements StorageImplementationProvider, Listener {
         for (User user : cache.values()) saveUser(user);
         cache.clear();
     }
-
 }

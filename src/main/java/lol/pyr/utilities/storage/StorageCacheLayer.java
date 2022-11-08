@@ -1,9 +1,8 @@
 package lol.pyr.utilities.storage;
 
 import lol.pyr.utilities.UtilitiesPlugin;
-import lol.pyr.utilities.storage.implementations.StorageType;
-import lol.pyr.utilities.storage.implementations.mongodb.MongoDBStorage;
-import lol.pyr.utilities.storage.implementations.yaml.YamlStorage;
+import lol.pyr.utilities.storage.implementations.MongoDBStorage;
+import lol.pyr.utilities.storage.implementations.YamlStorage;
 import lol.pyr.utilities.storage.model.User;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -20,7 +19,6 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 public class StorageCacheLayer implements Listener {
-
     private final UtilitiesPlugin plugin;
     private StorageImplementationProvider implementation;
     private final HashMap<UUID, User> userMap = new HashMap<>();
@@ -57,14 +55,14 @@ public class StorageCacheLayer implements Listener {
         if (userMap.containsKey(uuid)) plugin.runAsync(() -> implementation.saveUser(userMap.get(uuid)));
     }
 
-    public void saveAll() {
-        for (UUID uuid : new HashSet<>(userMap.keySet())) saveUser(uuid);
+    private void saveAllSync() {
+        for (User user : userMap.values()) implementation.saveUser(user);
     }
 
     public void shutdown() {
         HandlerList.unregisterAll(this);
         autosaveTask.cancel();
-        for (UUID uuid : userMap.keySet()) implementation.saveUser(userMap.get(uuid));
+        saveAllSync();
         implementation.shutdown();
     }
 
@@ -76,7 +74,7 @@ public class StorageCacheLayer implements Listener {
     public class CacheAutosaveTask extends BukkitRunnable {
         @Override
         public void run() {
-            saveAll();
+            saveAllSync();
 
             for (UUID uuid : new HashSet<>(userMap.keySet())) {
                 Player player = Bukkit.getPlayer(uuid);
@@ -86,5 +84,4 @@ public class StorageCacheLayer implements Listener {
             }
         }
     }
-
 }
