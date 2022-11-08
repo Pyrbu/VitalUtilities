@@ -4,7 +4,6 @@ import com.google.common.base.Charsets;
 import lol.pyr.utilities.UtilitiesPlugin;
 import lol.pyr.utilities.storage.StorageType;
 import lombok.Getter;
-import org.bukkit.GameMode;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
@@ -14,29 +13,21 @@ import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public class UtilitiesConfiguration {
-
     private final String FILENAME = "config.yml";
     private final UtilitiesPlugin plugin;
     private final File file;
     private final List<Runnable> hooks = new ArrayList<>();
 
     @Getter private StorageType storageType;
-    @Getter private final HashMap<GameMode, Set<String>> gameModeAliases = new HashMap<>();
-
     @Getter private String redisHostname;
     @Getter private int redisPort;
     @Getter private String redisUsername;
     @Getter private String redisPassword;
-
     @Getter private boolean enableNetworkFeatures;
     @Getter private String networkServerName;
-
     @Getter private String mongoHostname;
     @Getter private int mongoPort;
     @Getter private String mongoUsername;
@@ -74,33 +65,44 @@ public class UtilitiesConfiguration {
             plugin.getLogger().severe("Invalid storage type (" + config.getString("storage-type") + ") Defaulting to " + storageType.toString());
         }
 
-        gameModeAliases.clear();
-        for (GameMode gamemode : GameMode.values()) {
-            Set<String> set = config.getStringList("gamemode-aliases." + gamemode.toString().toLowerCase()).stream()
-                    .map(String::toLowerCase).collect(Collectors.toSet());
-            set.add(gamemode.toString().toLowerCase());
-            gameModeAliases.put(gamemode, set);
-        }
+        redisHostname = getString(config, "redis.hostname");
+        redisPort = getInt(config, "redis.port");
+        redisUsername = getString(config, "redis.username");
+        redisPassword = getString(config, "redis.password");
 
-        redisHostname = config.getString("redis.hostname");
-        redisPort = config.getInt("redis.port");
-        redisUsername = config.getString("redis.username");
-        redisPassword = config.getString("redis.password");
+        enableNetworkFeatures = getBoolean(config, "enable-network-features");
+        networkServerName = getString(config, "server-name");
 
-        enableNetworkFeatures = config.getBoolean("enable-network-features");
-        networkServerName = config.getString("server-name");
-
-        mongoHostname = config.getString("mongo.hostname");
-        mongoPort = config.getInt("mongo.port");
-        mongoUsername = config.getString("mongo.username");
-        mongoPassword = config.getString("mongo.password");
-        mongoDatabase = config.getString("mongo.database");
+        mongoHostname = getString(config, "mongo.hostname");
+        mongoPort = getInt(config, "mongo.port");
+        mongoUsername = getString(config, "mongo.username");
+        mongoPassword = getString(config, "mongo.password");
+        mongoDatabase = getString(config, "mongo.database");
 
         for (Runnable hook : hooks) hook.run();
     }
 
     public void registerReloadHook(Runnable runnable) {
         hooks.add(runnable);
+    }
+
+    private void warn(String key) {
+        plugin.getLogger().warning("Missing configuration key " + key + "! Add it to the config or reset your config & it will appear. Using the default value.");
+    }
+
+    private String getString(YamlConfiguration config, String key) {
+        if (!config.contains(key, true)) warn(key);
+        return config.getString(key);
+    }
+
+    private int getInt(YamlConfiguration config, String key) {
+        if (!config.contains(key, true)) warn(key);
+        return config.getInt(key);
+    }
+
+    private boolean getBoolean(YamlConfiguration config, String key) {
+        if (!config.contains(key, true)) warn(key);
+        return config.getBoolean(key);
     }
 
 }
