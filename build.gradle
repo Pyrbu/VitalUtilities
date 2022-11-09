@@ -23,7 +23,7 @@ dependencies {
 
     implementation "org.bstats:bstats-bukkit:3.0.0"
     implementation "org.mongodb:mongo-java-driver:3.12.11"
-    implementation "lol.pyr:extendedcommands:1.1.0"
+    implementation "lol.pyr:extendedcommands:1.0.0"
 
     //noinspection GradlePackageUpdate
     implementation "redis.clients:jedis:3.5.2"
@@ -31,6 +31,10 @@ dependencies {
 
 group "lol.pyr"
 version "1.0.0"
+
+compileJava {
+    options.release.set(17)
+}
 
 shadowJar {
     archiveClassifier.set ""
