@@ -8,7 +8,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
 public record StaffNotificationListener(UtilitiesPlugin plugin) implements Listener {
-
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         if (!event.getPlayer().hasPermission("utilities.staffnotifications")) return;

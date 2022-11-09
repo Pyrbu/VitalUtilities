@@ -8,7 +8,6 @@ import redis.clients.jedis.JedisPoolConfig;
 import redis.clients.jedis.Protocol;
 
 public class NetworkMessenger {
-
     protected final static String CHANNEL_NAME = "vitalutilities";
 
     private final UtilitiesPlugin plugin;
@@ -63,5 +62,4 @@ public class NetworkMessenger {
             }
         });
     }
-
 }

@@ -9,7 +9,6 @@ import org.bukkit.ChatColor;
 import java.util.List;
 
 public class UtilitiesCommand implements ExtendedExecutor<UtilitiesPlugin> {
-
     @Override
     public void run(CommandContext<UtilitiesPlugin> context) throws CommandExecutionException {
         context.setCurrentUsage(context.getLabel() + " help");
@@ -32,5 +31,4 @@ public class UtilitiesCommand implements ExtendedExecutor<UtilitiesPlugin> {
         if (context.argSize() == 1) return CompletionUtil.literal(context.popString(), "reload", "help");
         return List.of();
     }
-
 }

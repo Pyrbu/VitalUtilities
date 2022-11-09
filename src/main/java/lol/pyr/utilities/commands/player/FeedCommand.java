@@ -10,7 +10,6 @@ import org.bukkit.entity.Player;
 import java.util.List;
 
 public class FeedCommand implements ExtendedExecutor<UtilitiesPlugin> {
-
     @Override
     public void run(CommandContext<UtilitiesPlugin> context) throws CommandExecutionException {
         context.setCurrentUsage(context.getLabel() + (context.hasPermission("utilities.feed.others") ? " <player>" : ""));

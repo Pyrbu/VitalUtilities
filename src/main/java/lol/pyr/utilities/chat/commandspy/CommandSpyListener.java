@@ -8,7 +8,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
 public record CommandSpyListener(UtilitiesPlugin plugin) implements Listener {
-
     @EventHandler
     public void onCommand(PlayerCommandPreprocessEvent event) {
         plugin.runAsync(() -> {

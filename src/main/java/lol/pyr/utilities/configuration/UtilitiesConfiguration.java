@@ -104,5 +104,4 @@ public class UtilitiesConfiguration {
         if (!config.contains(key, true)) warn(key);
         return config.getBoolean(key);
     }
-
 }

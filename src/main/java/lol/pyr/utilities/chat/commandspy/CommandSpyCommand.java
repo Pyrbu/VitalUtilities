@@ -7,7 +7,6 @@ import lol.pyr.utilities.UtilitiesPlugin;
 import org.bukkit.entity.Player;
 
 public class CommandSpyCommand implements ExtendedExecutor<UtilitiesPlugin> {
-
     @Override
     public void run(CommandContext<UtilitiesPlugin> context) throws CommandExecutionException {
         Player player = context.ensureSenderIsPlayer();
@@ -18,5 +17,4 @@ public class CommandSpyCommand implements ExtendedExecutor<UtilitiesPlugin> {
             else context.getSender().sendMessage(plugin.getMessages().get(player, "command-spy-disabled"));
         }));
     }
-
 }

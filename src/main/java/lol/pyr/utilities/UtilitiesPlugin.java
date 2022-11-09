@@ -122,5 +122,4 @@ public class UtilitiesPlugin extends JavaPlugin {
     public void runAsync(Runnable runnable) {
         Bukkit.getScheduler().runTaskAsynchronously(this, runnable);
     }
-
 }

@@ -12,7 +12,6 @@ import redis.clients.jedis.JedisPubSub;
 import java.util.Arrays;
 
 public class NetworkSubscriber extends JedisPubSub implements Runnable {
-
     private final UtilitiesPlugin plugin;
     private final JedisPool jedisPool;
     private final NetworkMessenger messenger;
@@ -85,5 +84,4 @@ public class NetworkSubscriber extends JedisPubSub implements Runnable {
     private static String papi(Player player, String message) {
         return Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI") ? PlaceholderAPI.setPlaceholders(player, message) : message;
     }
-
 }

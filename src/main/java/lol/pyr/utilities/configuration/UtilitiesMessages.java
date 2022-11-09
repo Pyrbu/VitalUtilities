@@ -18,7 +18,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class UtilitiesMessages {
-
     private final String FILENAME = "messages.yml";
     private final UtilitiesPlugin plugin;
     private final Map<String, String> messages = new HashMap<>();

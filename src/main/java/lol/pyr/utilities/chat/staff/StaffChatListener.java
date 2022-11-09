@@ -10,7 +10,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 public record StaffChatListener(UtilitiesPlugin plugin) implements Listener {
-
     @EventHandler
     public void onChat(AsyncPlayerChatEvent event) {
         if (!event.getPlayer().hasPermission("utilities.staffchat")) return;
@@ -24,5 +23,4 @@ public record StaffChatListener(UtilitiesPlugin plugin) implements Listener {
         if (plugin.getUtilitiesConfig().isEnableNetworkFeatures()) plugin.getNetworkConnection().broadcastWithPermission("utilities.staffchat", message);
         else for (Player p : Bukkit.getOnlinePlayers()) if (p.hasPermission("utilities.staffchat")) p.sendMessage(message);
     }
-
 }

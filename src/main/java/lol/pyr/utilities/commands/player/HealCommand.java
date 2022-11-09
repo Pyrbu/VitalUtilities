@@ -11,7 +11,6 @@ import org.bukkit.entity.Player;
 import java.util.List;
 
 public class HealCommand implements ExtendedExecutor<UtilitiesPlugin> {
-
     @Override
     @SuppressWarnings("ConstantConditions")
     public void run(CommandContext<UtilitiesPlugin> context) throws CommandExecutionException {

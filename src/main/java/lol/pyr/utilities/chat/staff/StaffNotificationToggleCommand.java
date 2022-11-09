@@ -7,7 +7,6 @@ import lol.pyr.utilities.UtilitiesPlugin;
 import org.bukkit.entity.Player;
 
 public class StaffNotificationToggleCommand implements ExtendedExecutor<UtilitiesPlugin> {
-
     @Override
     public void run(CommandContext<UtilitiesPlugin> context) throws CommandExecutionException {
         Player player = context.ensureSenderIsPlayer();

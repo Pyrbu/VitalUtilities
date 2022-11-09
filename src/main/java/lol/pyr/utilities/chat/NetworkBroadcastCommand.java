@@ -8,7 +8,6 @@ import lol.pyr.utilities.util.ColorUtil;
 
 
 public class NetworkBroadcastCommand implements ExtendedExecutor<UtilitiesPlugin> {
-
     @Override
     public void run(CommandContext<UtilitiesPlugin> context) throws CommandExecutionException {
         if (!context.getPlugin().getUtilitiesConfig().isEnableNetworkFeatures()) {

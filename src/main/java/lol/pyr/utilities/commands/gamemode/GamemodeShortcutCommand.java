@@ -11,7 +11,6 @@ import org.bukkit.entity.Player;
 import java.util.List;
 
 public record GamemodeShortcutCommand(GameMode gameMode) implements ExtendedExecutor<UtilitiesPlugin> {
-
     @Override
     public void run(CommandContext<UtilitiesPlugin> context) throws CommandExecutionException {
         Player player = context.parseTargetOrSelf("utilities.gamemode.others");

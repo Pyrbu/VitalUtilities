@@ -11,7 +11,6 @@ import org.bukkit.entity.Player;
 import java.util.List;
 
 public class GamemodeCommand implements ExtendedExecutor<UtilitiesPlugin> {
-
     @Override
     public void run(CommandContext<UtilitiesPlugin> context) throws CommandExecutionException {
         context.setCurrentUsage(context.getLabel() + " <gamemode> [player]");
@@ -28,5 +27,4 @@ public class GamemodeCommand implements ExtendedExecutor<UtilitiesPlugin> {
         if (context.hasPermission("utilities.gamemode.others") && context.argSize() == 2) return CompletionUtil.players(context.popString());
         return List.of();
     }
-
 }
